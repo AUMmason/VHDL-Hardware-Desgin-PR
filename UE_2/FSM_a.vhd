@@ -2,8 +2,6 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
--- Todo BIT_WIDTH aus MAX_COUNTER_VALUE ableiten!
-
 architecture rtl of FSM_e is
   type FSM_STATE is (START, STANDBY, LED_ON);
   constant MAX_COUNTER_VALUE: std_ulogic_vector(BIT_WIDTH - 1 downto 0) := (others => '1');
@@ -26,21 +24,22 @@ begin
 
     case state is
       when START =>
+        led_o <= '0';
         if start_button_i = '1' then
-          led_o <= '0';
           next_state <= STANDBY;
         end if;
       when STANDBY =>
-        if unsigned(counter_value_i) > unsigned(MAX_COUNTER_VALUE) then
+        led_o <= '0';
+        if unsigned(counter_value_i) = unsigned(MAX_COUNTER_VALUE) then
           next_state <= LED_ON;
         end if;
       when LED_ON => 
-        if unsigned(counter_value_i) > unsigned(MAX_COUNTER_VALUE) then
-          led_o <= '1';
+        led_o <= '1';
+        if unsigned(counter_value_i) = unsigned(MAX_COUNTER_VALUE) then
           next_state <= START;
         end if;
       when others =>
-        -- failsafe
+        -- FALLBACK
         next_state <= state;    
     end case;
   end process state_machine;
