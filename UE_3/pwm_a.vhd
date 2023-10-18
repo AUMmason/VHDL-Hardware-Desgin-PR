@@ -7,14 +7,16 @@ architecture rtl of PWM is
   signal PWM_pin: std_ulogic;
 begin
   
-  PMW_pin_o <= PMW_pin;
+  PWM_pin_o <= PWM_pin;
 
-  -- Concurrent conditional signal assignment
-  PMW_pin <= '1' when counter_val < on_counter_val_i else '0'; 
+  PWM_pin <= '1' when (counter_val <  ON_counter_val_i) and reset_i = '0' else '0'; 
 
-  clk : process( clk_i, reset_i )
+  clk : process(clk_i, reset_i)
   begin
     if(reset_i = '1') then
+      -- Which behavior is wanted here? Should the pmw signal be '1' when reset is hit?
+      -- This code leads to asynchronous behavior. But the next PWM-Cycle will be
+      -- synchronous again.
       counter_val <= (others => '0');
     elsif(rising_edge(clk_i)) then
       counter_val <= next_counter_val;
@@ -22,15 +24,17 @@ begin
   end process ; -- clk
 
   counter_assignment: process(counter_val)
-  begin
-    -- Sequential signal assignment
-    next_counter_val <= counter_val;  
 
+  -- TODO Somewhere here ist a off-by-one-Error
+
+  begin
+    next_counter_val <= counter_val;  
     if(counter_val < period_counter_val_i) then
       next_counter_val <= counter_val + to_unsigned(1, COUNTER_LEN - 1);
-    else then
-      next_counter_val <= (ohters => '0');
+    else
+      next_counter_val <= (others => '0');
     end if;
   end process counter_assignment;
+
   
 end architecture rtl;
