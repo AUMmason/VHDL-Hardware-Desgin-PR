@@ -12,8 +12,8 @@ architecture Testbench of pwm_tb is
   constant COUNTER_LEN: integer := 4;
   signal clk, reset: std_ulogic := '0';
   signal PWM_pin: std_ulogic;
-  signal ON_counter_val: unsigned(COUNTER_LEN - 1 downto 0) := "1111";
-  signal Period_counter_val: unsigned(COUNTER_LEN - 1 downto 0) := "1111";
+  signal ON_counter_val: unsigned(COUNTER_LEN - 1 downto 0) := "0100"; --4
+  signal Period_counter_val: unsigned(COUNTER_LEN - 1 downto 0) := "1111"; --15
 begin
   
   PWM_Module: entity work.PWM(rtl) generic map(

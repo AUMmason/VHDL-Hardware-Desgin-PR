@@ -23,13 +23,10 @@ begin
     end if ;
   end process ; -- clk
 
-  counter_assignment: process(counter_val)
-
-  -- TODO Somewhere here ist a off-by-one-Error
-
+  counter_assignment: process(counter_val)  
   begin
     next_counter_val <= counter_val;  
-    if(counter_val < period_counter_val_i) then
+    if(counter_val < period_counter_val_i - 1) then
       next_counter_val <= counter_val + to_unsigned(1, COUNTER_LEN - 1);
     else
       next_counter_val <= (others => '0');
