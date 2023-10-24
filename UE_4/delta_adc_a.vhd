@@ -4,9 +4,7 @@ use IEEE.numeric_std.all;
 use IEEE.math_real.all;
 
 architecture rtl of delta_adc is
-  -- Todo: this is a temporary fix it doesn't work as shown in class, idk if there is a better option?
-  constant BIT_WIDTH : natural := integer( ceil(log2(real( abs(to_integer(sampling_period_i)) ))) );
-  signal sampling_strobe : std_ulogic;
+  signal sampling_strobe, next_adc_valid_strobe : std_ulogic;
   signal adc_value, next_adc_value : unsigned(BIT_WIDTH - 1 downto 0);
 begin
   
@@ -30,8 +28,7 @@ begin
     PWM_pin_o => PWM_o
   );
   
-  -- When the sampling strobe is active the adc got an updated signal
-  adc_valid_strobe_o <= sampling_strobe;
+  -- adc_valid_strobe_o can only be '1' after sampling strobe has been '1'
 
   Clock: process(clk_i, reset_i)
   begin
@@ -39,6 +36,7 @@ begin
       ADC_Value <= (others => '0');
     elsif rising_edge(clk_i) then
       adc_value <= next_adc_value;
+      adc_valid_strobe_o <= next_adc_valid_strobe;
     end if;
   end process Clock;
 
@@ -48,11 +46,19 @@ begin
     next_adc_value <= adc_value;
 
     if sampling_strobe = '1' then
+      -- set adc_valid_strobe = '1' after adc_value is registered
+      next_adc_valid_strobe <= '1';
+    
       if comparator_i = '1' and adc_value < sampling_period_i then
         next_adc_value <= adc_value + to_unsigned(BIT_WIDTH - 1, 1);
-      elsif comparator_i = '0' and adc_value > to_unsigned(BIT_WIDTH - 1, 0) then
+      elsif comparator_i = '0' and adc_value > 0 then 
+      -- @Tutor: Why can I not use adc_value > to_unsigned(BIT_WIDTH - 1, 0); instead of adc_value > 0 ???
+        report "adc_value - 1";
         next_adc_value <= adc_value - to_unsigned(BIT_WIDTH - 1, 1);
       end if;
+
+    else 
+      next_adc_valid_strobe <= '0';
     end if;
 
   end process Sampler;
