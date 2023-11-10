@@ -5,11 +5,11 @@ use IEEE.math_real.all;
 
 entity strobe_generator is
   generic (
-    BIT_WIDTH : natural
+    BIT_WIDTH : natural;
+    STROBE_PERIOD : unsigned
   );
   port (
     -- Defines the duration after which a strobe signal is sent periodically
-    signal strobe_period_i : unsigned;
     signal clk_i, reset_i : in std_ulogic;
     signal strobe_o : out std_ulogic
   );

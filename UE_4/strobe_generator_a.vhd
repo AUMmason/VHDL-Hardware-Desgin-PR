@@ -26,7 +26,7 @@ begin
 
     next_counter_val <= counter_val;
 
-    if counter_val < strobe_period_i - to_unsigned(1, BIT_WIDTH - 1) then
+    if counter_val < STROBE_PERIOD - to_unsigned(1, BIT_WIDTH - 1) then
       next_counter_val <= counter_val + to_unsigned(1, BIT_WIDTH - 1);
     else
       next_counter_val <= (others => '0');  
