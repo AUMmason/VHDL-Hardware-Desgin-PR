@@ -33,7 +33,7 @@ begin
   begin
     sync_chain_next <= sync_chain;
     -- Shift asynchronous input from right to left
-    sync_chain_next <= Async_i & sync_chain(CHAIN_LENGTH - 1 downto 1);
+    sync_chain_next <= Async_i & sync_chain(sync_chain'left downto 1);
   end process chain_shift;
 
 end architecture rtl;

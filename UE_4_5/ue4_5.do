@@ -10,9 +10,9 @@ vsim -t ms sync_chain_tb
 # Label
 add wave -divider Inputs
 
-add wave -noupdate -color Cyan /sync_chain_tb/async_i
 add wave -noupdate -color {Slate Blue} /sync_chain_tb/reset
 add wave -noupdate -color {Slate Blue} /sync_chain_tb/clk
+add wave -noupdate -color Cyan /sync_chain_tb/async_i
 
 # Label
 add wave -divider Outputs
