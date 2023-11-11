@@ -1,7 +1,6 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-use work.ue2_definitions.all;
 
 architecture rtl of counter_e is
   type CNT_STATE is (RESET, COUNTING);
