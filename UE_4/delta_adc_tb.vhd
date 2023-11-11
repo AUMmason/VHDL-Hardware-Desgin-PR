@@ -9,22 +9,21 @@ end entity delta_adc_tb;
 architecture Testbench of delta_adc_tb is
   constant CLK_FREQUENCY : integer := 1000; -- Hz
   constant CLK_PERIOD : time := 1000 ms / CLK_FREQUENCY; -- T = 1/f
-  constant SAMPLING_PERIOD_SIZE : natural := 20;
-  -- Takes a natural number and specifies the desired bitlength for the bit_vectors
-  constant BIT_WIDTH : natural := integer( ceil(log2(real( SAMPLING_PERIOD_SIZE ))) );
+  
+  constant PWM_PERIOD: natural := 20;
+  constant SAMPLING_PERIOD: natural := 8;
 
-  signal sampling_period : unsigned(BIT_WIDTH - 1 downto 0) := to_unsigned(SAMPLING_PERIOD_SIZE, BIT_WIDTH);
   signal clk, reset : std_ulogic := '0';
   signal adc_valid_strobe, comparator, PWM_o : std_ulogic;
 begin
   
   Delta_ADC: entity work.delta_adc(rtl) generic map (
-    BIT_WIDTH => BIT_WIDTH
+    PWM_PERIOD => PWM_PERIOD,
+    SAMPLING_PERIOD => SAMPLING_PERIOD
   ) port map(
     clk_i => clk,
     reset_i => reset,
     comparator_i => comparator,
-    sampling_period_i => sampling_period,
     adc_valid_strobe_o => adc_valid_strobe,
     PWM_o => PWM_o
   );
@@ -34,6 +33,7 @@ begin
   Stimuli: process is
   begin
     report std_ulogic'image(adc_valid_strobe);
+    report std_ulogic'image(PWM_o);
 
     reset <= '1';
 

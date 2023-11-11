@@ -4,32 +4,29 @@ use IEEE.numeric_std.all;
 use IEEE.math_real.all;
 
 architecture rtl of delta_adc is
-  signal sampling_strobe, next_adc_valid_strobe : std_ulogic;
-  signal adc_value, next_adc_value : unsigned(BIT_WIDTH - 1 downto 0);
-begin
-  
-  -- Explaining the use of sampling_period_i:
+  -- Derive Bitlength for internal signals from given generics
+  constant STROBE_BIT_WIDTH: natural := integer( ceil(log2(real( SAMPLING_PERIOD ))) );
+  constant ADC_BIT_WIDTH: natural := integer( ceil(log2(real( PWM_PERIOD ))) );
+  constant ADC_MAX_VALUE: unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(PWM_PERIOD, ADC_BIT_WIDTH);
 
-  -- sampling_period_i defines: Period_counter_val_i since the pwm-signal 
-  -- must be created according to the time between two sample strobes
-  -- sampling_period_i is also an upper bound for the adc_value since the adc_value
-  -- must lie between 0 and Period_counter_val_i
+  signal sampling_strobe, next_adc_valid_strobe : std_ulogic;
+  signal adc_value, next_adc_value : unsigned(ADC_BIT_WIDTH - 1 downto 0);
+begin
 
   Sampling_Strobe_Module: entity work.strobe_generator(rtl) generic map(
-    BIT_WIDTH => BIT_WIDTH
+    STROBE_PERIOD => SAMPLING_PERIOD 
   ) port map (
     clk_i => clk_i,
     reset_i => reset_i,
-    strobe_period_i => sampling_period_i, 
     strobe_o => sampling_strobe
   );
 
   PWM_Module: entity work.PWM(rtl) generic map(
-    COUNTER_LEN => BIT_WIDTH 
+    COUNTER_LEN => ADC_BIT_WIDTH 
   ) port map (
     clk_i => clk_i,
     reset_i => reset_i,
-    Period_counter_val_i => sampling_period_i,
+    Period_counter_val_i => ADC_MAX_VALUE,
     ON_counter_val_i => adc_value,
     PWM_pin_o => PWM_o
   );
@@ -45,27 +42,20 @@ begin
   end process Clock;
 
   Sampler: process(sampling_strobe, adc_value)
+  -- The sampling strobe is being sent multiple times during a PWM-Period
+  -- and updates the current ADC value each time.
   begin
-    
     next_adc_value <= adc_value;
 
     if sampling_strobe = '1' then
-      -- set adc_valid_strobe = '1' after adc_value is registered
-      next_adc_valid_strobe <= '1';
-    
-      if comparator_i = '1' and adc_value < sampling_period_i then
-        next_adc_value <= adc_value + to_unsigned(1, BIT_WIDTH - 1);
+      next_adc_valid_strobe <= '1'; -- set adc_valid_strobe = '1' after adc_value is registered
+      if comparator_i = '1' and adc_value < ADC_MAX_VALUE then
+        next_adc_value <= adc_value + to_unsigned(1, ADC_BIT_WIDTH);
       elsif comparator_i = '0' and adc_value > 0 then 
-     
-        -- @Tutor: Why can I not use adc_value > to_unsigned(BIT_WIDTH - 1, 0); instead of adc_value > 0 ???
-        next_adc_value <= adc_value - to_unsigned(1, BIT_WIDTH - 1);
-
+        next_adc_value <= adc_value - to_unsigned(1, ADC_BIT_WIDTH);
       end if;
-
     else 
       next_adc_valid_strobe <= '0';
     end if;
-
   end process Sampler;
-
 end architecture rtl;
