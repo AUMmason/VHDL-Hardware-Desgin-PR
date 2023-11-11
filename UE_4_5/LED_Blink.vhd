@@ -3,10 +3,6 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 entity LED_Blink is
-  generic (
-    BIT_WIDTH: integer;
-    FF_AMOUNT: positive
-  );
   port (
     signal clk_i, reset_i, start_button_i : in std_ulogic;
     signal led_o : out std_ulogic
@@ -14,9 +10,11 @@ entity LED_Blink is
 end entity LED_Blink;
 
 architecture Synth of LED_Blink is
+  constant BIT_WIDTH: natural := 4;
+  constant FF_AMOUNT: natural := 2;
+
   signal counter_restart_strobe, start_button_sync: std_ulogic;
   signal counter_value: std_ulogic_vector(BIT_WIDTH - 1 downto 0);
-
 begin
   
   InputSynchronizer: entity work.sync_chain(rtl) generic map(
