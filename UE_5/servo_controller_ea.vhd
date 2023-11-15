@@ -26,8 +26,9 @@ architecture rtl of servo_controller is
 
   -- TODO: put everything below in a package
   -- Min and Max values that are vaild for the input signals to set the servo angle!
+  constant SERVO_SIGNAL_RANGE : natural := 1000;
   constant SERVO_SIGNAL_MIN : natural := 1000; -- 0°
-  constant SERVO_SIGNAL_MAX : natural := 2000; -- 180°
+  constant SERVO_SIGNAL_MAX : natural := SERVO_SIGNAL_MIN + SERVO_SIGNAL_RANGE; -- 180°
   -- TIMING SETUP:
   -- Clock Frequency is per Millisecond!
   constant CLOCK_FREQUENCY : natural := 50_000_000 / 1000; -- 50MHz / 1000
@@ -36,7 +37,7 @@ architecture rtl of servo_controller is
   constant COUNTER_MAX : natural := PWM_PERIOD * CLOCK_FREQUENCY;
   constant COUNTER_BIT_WIDTH : natural := integer( ceil(log2(real( COUNTER_MAX ))) );
   -- INPUT SIGNAL MAPPING:
-  constant STEP_SIZE : unsigned(COUNTER_BIT_WIDTH - 1 downto 0) := to_unsigned(COUNTER_MAX / SERVO_SIGNAL_MAX, COUNTER_BIT_WIDTH); 
+  constant STEP_SIZE : unsigned(COUNTER_BIT_WIDTH - 1 downto 0) := to_unsigned(CLOCK_FREQUENCY / SERVO_SIGNAL_RANGE, COUNTER_BIT_WIDTH); 
     -- Sets the on-time for the pwm!
   signal pwm_servo_on_val : unsigned(COUNTER_BIT_WIDTH - 1 downto 0);
     -- Temporary Signal used for multiplication with STEP_SIZE:
