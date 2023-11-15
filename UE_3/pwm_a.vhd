@@ -9,7 +9,7 @@ begin
   
   PWM_pin_o <= PWM_pin;
 
-  PWM_pin <= '1' when (counter_val <  ON_counter_val_i) and reset_i = '0' else '0'; 
+  PWM_pin <= '1' when (counter_val < ON_counter_val_i) and reset_i = '0' else '0'; 
 
   clk : process(clk_i, reset_i)
   begin
@@ -26,8 +26,8 @@ begin
   counter_assignment: process(counter_val)  
   begin
     next_counter_val <= counter_val;  
-    if(counter_val < period_counter_val_i - 1) then
-      next_counter_val <= counter_val + to_unsigned(1, COUNTER_LEN - 1);
+    if counter_val < period_counter_val_i - to_unsigned(1, COUNTER_LEN) then
+      next_counter_val <= counter_val + to_unsigned(1, COUNTER_LEN);
     else
       next_counter_val <= (others => '0');
     end if;

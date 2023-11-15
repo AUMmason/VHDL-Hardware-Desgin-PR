@@ -5,7 +5,8 @@ use ieee.math_real.all;
 
 entity servo_controller is
   generic (
-    INPUT_BIT_WIDTH : natural -- given from parent module and chosen by the lower and upper_bound values
+    -- given by parent module and chosen by the lower and upper_bound values (eg. 1000 or 2000)
+    INPUT_BIT_WIDTH : natural 
   );
   port (
     signal clk_i, reset_i : in std_ulogic;
@@ -15,35 +16,37 @@ entity servo_controller is
 end entity servo_controller;
 
 architecture rtl of servo_controller is
+  -- EXPLAINATION:
+
   -- Servo Controller receives Signals at 50 MHz = 50_000_000 Hz.
   -- Clock Period is 20 ns = 0,000_000_02.
   -- So after 50_000_000 Clock Cycles one second has passed.
-  -- Which means we have to set servo_o to '1' for 50_000_000 to 100_000_000
+  -- Which means we have to set servo_o to '1' and count to 50_000_000 upto 100_000_000 
   -- Clock Cycles to set the angle of the servo!
 
+  -- TODO: put everything below in a package
   -- Min and Max values that are vaild for the input signals to set the servo angle!
   constant SERVO_SIGNAL_MIN : natural := 1000; -- 0°
   constant SERVO_SIGNAL_MAX : natural := 2000; -- 180°
-  -- Timing Setup:
-  constant CYCLES_PER_SECOND : natural := 50_000_000; -- = 50 MHz
-  constant MAX_SECONDS : natural := 2; -- S
-  constant COUNTER_MIN : natural := CYCLES_PER_SECOND;
-  constant COUNTER_MAX : natural := MAX_SECONDS * CYCLES_PER_SECOND;
+  -- TIMING SETUP:
+  -- Clock Frequency is per Millisecond!
+  constant CLOCK_FREQUENCY : natural := 50_000_000 / 1000; -- 50MHz / 1000
+  constant PWM_PERIOD : natural := 2; -- ms
+  constant COUNTER_MIN : natural := CLOCK_FREQUENCY;
+  constant COUNTER_MAX : natural := PWM_PERIOD * CLOCK_FREQUENCY;
   constant COUNTER_BIT_WIDTH : natural := integer( ceil(log2(real( COUNTER_MAX ))) );
-  -- Signal Mapping:
-  constant STEP_SIZE : unsigned(COUNTER_BIT_WIDTH - 1 downto 0) := to_unsigned(COUNTER_MAX / 1000, COUNTER_BIT_WIDTH); 
+  -- INPUT SIGNAL MAPPING:
+  constant STEP_SIZE : unsigned(COUNTER_BIT_WIDTH - 1 downto 0) := to_unsigned(COUNTER_MAX / SERVO_SIGNAL_MAX, COUNTER_BIT_WIDTH); 
+    -- Sets the on-time for the pwm!
   signal pwm_servo_on_val : unsigned(COUNTER_BIT_WIDTH - 1 downto 0);
+    -- Temporary Signal used for multiplication with STEP_SIZE:
+  signal pwm_temp : unsigned(COUNTER_BIT_WIDTH + INPUT_BIT_WIDTH - 1 downto 0);
 begin  
 
-  -- Clamp values that are below 1000 or over 2000
-  -- Multiply pwm_on_value_i with stepsize!
-  pwm_servo_on_val <= 
-      to_unsigned(COUNTER_MIN, COUNTER_BIT_WIDTH) when 
-    pwm_on_value_i < to_unsigned(SERVO_SIGNAL_MIN, INPUT_BIT_WIDTH) else 
-      to_unsigned(SERVO_SIGNAL_MAX, INPUT_BIT_WIDTH) when 
-    pwm_on_value_i > to_unsigned(SERVO_SIGNAL_MAX, INPUT_BIT_WIDTH) else
-      STEP_SIZE * pwm_on_value_i;
+  pwm_temp <= pwm_on_value_i * STEP_SIZE;
 
+  pwm_servo_on_val <= pwm_temp(pwm_temp'high - INPUT_BIT_WIDTH downto 0);
+    
   PWM: entity work.PWM(rtl) generic map(
     COUNTER_LEN => COUNTER_BIT_WIDTH
   ) port map (
