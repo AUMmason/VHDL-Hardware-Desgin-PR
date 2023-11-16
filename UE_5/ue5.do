@@ -3,6 +3,7 @@ quit -sim
 # Files needed for Simulation
 vcom VHDL-Hardware-Desgin-PR\\UE_3\\pwm_e.vhd
 vcom VHDL-Hardware-Desgin-PR\\UE_3\\pwm_a.vhd
+vcom VHDL-Hardware-Desgin-PR\\UE_5\\servo_package.vhd
 vcom VHDL-Hardware-Desgin-PR\\UE_5\\servo_controller_ea.vhd
 vcom VHDL-Hardware-Desgin-PR\\UE_5\\servo_controller_tb.vhd
 
