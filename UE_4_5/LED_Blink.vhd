@@ -18,10 +18,11 @@ architecture Synth of LED_Blink is
 
   signal counter_restart_strobe, start_button_sync: std_ulogic;
   signal counter_value: std_ulogic_vector(BIT_WIDTH - 1 downto 0);
-  signal reset_invert : std_ulogic;
+  signal reset_invert, start_button_invert : std_ulogic;
 begin
   
-  -- uncomment for synth:
+  -- Buttons use Inverted Logic
+  start_button_invert <= not start_button_i;
   reset_invert <= not reset_i;
 
   InputSynchronizer: entity work.sync_chain(rtl) generic map(
@@ -29,7 +30,7 @@ begin
   ) port map (
     Async_i => start_button_i,
     clk_i => clk_i,
-    reset_i => reset_i,
+    reset_i => reset_invert,
     sync_o => start_button_sync
   );
 
@@ -37,7 +38,7 @@ begin
     BIT_WIDTH => BIT_WIDTH
   ) port map (
     clk_i => clk_i,
-    reset_i => reset_i,
+    reset_i => reset_invert,
     counter_restart_strobe_i => counter_restart_strobe,
     counter_value_o => counter_value
   );
@@ -47,7 +48,7 @@ begin
     MAX_COUNTER_VALUE => COUNTER_1_SEC_VALUE
   ) port map (
     clk_i => clk_i,
-    reset_i => reset_i,
+    reset_i => reset_invert,
     start_button_i => start_button_sync,
     counter_value_i => counter_value,
     led_o => led_o,
