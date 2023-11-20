@@ -4,7 +4,8 @@ use IEEE.numeric_std.all;
 
 entity FSM_e is
   generic (
-    BIT_WIDTH: integer
+    BIT_WIDTH: integer;
+    MAX_COUNTER_VALUE: natural
   );
   port (
     signal clk_i, reset_i, start_button_i: in std_ulogic;

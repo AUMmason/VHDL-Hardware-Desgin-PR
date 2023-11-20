@@ -4,9 +4,7 @@ use IEEE.numeric_std.all;
 
 architecture rtl of counter_e is
   type CNT_STATE is (RESET, COUNTING);
-  signal counter_value: std_ulogic_vector(BIT_WIDTH - 1 downto 0) := (others => '0');
-  signal state, next_state: CNT_STATE;
-  
+  signal counter_value: std_ulogic_vector(BIT_WIDTH - 1 downto 0) := (others => '0');  
 begin
 
   clk: process(reset_i, clk_i) is

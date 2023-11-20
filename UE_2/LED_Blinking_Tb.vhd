@@ -1,15 +1,17 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
+use ieee.math_real.all;
 
 entity LED_Blinking_Tb is
 end entity LED_Blinking_Tb;
 
 architecture Simulation of LED_Blinking_Tb is
-  constant CLK_FREQ: integer := 50; -- Hz
+  constant CLK_FREQ: natural := 50_000; -- 50_000 Hz
+  constant COUNTER_1_SEC_VALUE : natural := CLK_FREQ;
+  constant BIT_WIDTH : natural := integer( ceil(log2(real( CLK_FREQ ))) );
+  
   constant CLK_PERIOD: time := 1000 ms / CLK_FREQ; -- T = 1/f 
-
-  constant BIT_WIDTH: integer := 4;
 
   signal clk, reset, start_button, led, counter_restart_strobe: std_ulogic := '0';
   signal counter_value: std_ulogic_vector(BIT_WIDTH - 1 downto 0);
@@ -26,7 +28,8 @@ begin
   );
 
   FSM: entity work.FSM_e(rtl) generic map(
-    BIT_WIDTH => BIT_WIDTH
+    BIT_WIDTH => BIT_WIDTH,
+    MAX_COUNTER_VALUE => COUNTER_1_SEC_VALUE
   ) port map (
     clk_i => clk,
     reset_i => reset,
@@ -52,14 +55,14 @@ begin
 
     start_button <= '0';
 
-    wait for 1000 ms;
+    wait for 2500 ms;
 
     start_button <= '1';
     wait for 100 ms;
 
     start_button <= '0';
 
-    wait for 400 ms;
+    wait for 1400 ms;
     reset <= '1';
 
     wait for 100 ms;

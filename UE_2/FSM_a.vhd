@@ -4,7 +4,6 @@ use IEEE.numeric_std.all;
 
 architecture rtl of FSM_e is
   type FSM_STATE is (START, STANDBY, LED_ON);
-  constant MAX_COUNTER_VALUE: std_ulogic_vector(BIT_WIDTH - 1 downto 0) := (others => '1');
   signal state, next_state: FSM_STATE;
 begin
   
@@ -30,12 +29,12 @@ begin
         end if;
       when STANDBY =>
         led_o <= '0';
-        if unsigned(counter_value_i) = unsigned(MAX_COUNTER_VALUE) then
+        if unsigned(counter_value_i) >= to_unsigned(MAX_COUNTER_VALUE, BIT_WIDTH) then
           next_state <= LED_ON;
         end if;
       when LED_ON => 
         led_o <= '1';
-        if unsigned(counter_value_i) = unsigned(MAX_COUNTER_VALUE) then
+        if unsigned(counter_value_i) >= to_unsigned(MAX_COUNTER_VALUE, BIT_WIDTH) then
           next_state <= START;
         end if;
       when others =>

@@ -1,6 +1,7 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
+use ieee.math_real.all;
 
 entity LED_Blink is
   port (
@@ -10,13 +11,19 @@ entity LED_Blink is
 end entity LED_Blink;
 
 architecture Synth of LED_Blink is
-  constant BIT_WIDTH: natural := 4;
+  constant CLK_FREQ: natural := 50_000_000; -- 50 MHz
+  constant COUNTER_1_SEC_VALUE : natural := CLK_FREQ;
+  constant BIT_WIDTH : natural := integer( ceil(log2(real( CLK_FREQ ))) );
   constant FF_AMOUNT: natural := 2;
 
   signal counter_restart_strobe, start_button_sync: std_ulogic;
   signal counter_value: std_ulogic_vector(BIT_WIDTH - 1 downto 0);
+  signal reset_invert : std_ulogic;
 begin
   
+  -- uncomment for synth:
+  reset_invert <= not reset_i;
+
   InputSynchronizer: entity work.sync_chain(rtl) generic map(
     CHAIN_LENGTH => FF_AMOUNT
   ) port map (
@@ -36,7 +43,8 @@ begin
   );
 
   FSM: entity work.FSM_e(rtl) generic map(
-    BIT_WIDTH => BIT_WIDTH
+    BIT_WIDTH => BIT_WIDTH,
+    MAX_COUNTER_VALUE => COUNTER_1_SEC_VALUE
   ) port map (
     clk_i => clk_i,
     reset_i => reset_i,
