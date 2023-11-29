@@ -32,6 +32,7 @@ add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_
 add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_Average/sum_next
 add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_Average/data_last
 add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_Average/data_o
+add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_Average/REG_AMOUNT
 
 run 1500 ms
 # Set Zoom Level {from ms} {to ms}

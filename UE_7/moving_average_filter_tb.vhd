@@ -53,27 +53,51 @@ begin
 
     reset <= '0';
 
-    wait for 100 ms;
+    wait for 10 ms;
+
+    data_i <= "0010";
+
+    wait for 40 ms;
 
     data_i <= "1110";
-    
-    wait for 30 ms;
 
-    data_i <= "0001";
+    wait for 40 ms;
 
-    wait for 30 ms;
+    data_i <= "1100";
 
-    data_i <= "0000";
+    wait for 40 ms;
 
-    wait for 500 ms;
+    data_i <= "1001";
+
+    wait for 40 ms;
 
     data_i <= "1111";
 
-    wait for 20 ms;
+    wait for 40 ms;
+
+    data_i <= "0110";
+
+    wait for 40 ms;
+
+    data_i <= "0111";
+
+    wait for 40 ms;
+
+    data_i <= "0101";
+
+    wait for 40 ms;
+
+    data_i <= "1011";
+
+    wait for 40 ms;
+
+    data_i <= "0100";
+
+    wait for 40 ms;
 
     data_i <= "0000";
-
-    wait for 500 ms;
+    
+    wait;
 
   end process Stimuli;
 

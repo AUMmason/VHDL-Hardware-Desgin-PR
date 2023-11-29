@@ -18,8 +18,8 @@ entity moving_average_filter is
 end entity moving_average_filter;
 
 architecture rtl of moving_average_filter is
-  constant REG_AMOUNT : natural := integer( ceil(log2(real(FILTER_ORDER))) ) ** 2;
-
+  constant REG_AMOUNT : natural := 2 ** integer( ceil(log2(real(FILTER_ORDER))) );
+    
   signal sum : unsigned(BIT_WIDTH + REG_AMOUNT - 1 downto 0);
   signal sum_next : unsigned(BIT_WIDTH + REG_AMOUNT - 1 downto 0);
 
@@ -27,15 +27,15 @@ architecture rtl of moving_average_filter is
   signal strobe_data_valid_next : std_ulogic;
 begin
 
-  data_o <= resize(sum * (1 / (REG_AMOUNT + 1)), BIT_WIDTH);
+  data_o <= resize(sum / REG_AMOUNT, BIT_WIDTH); -- TODO: sum * (1/REG_AMOUNT) how to do this?
 
   ShiftRegister: entity work.unsigned_shift_register(rtl) generic map (
     BIT_WIDTH => BIT_WIDTH,
-    LENGTH => REG_AMOUNT + 2 
+    LENGTH => REG_AMOUNT + 1 -- TODO: see below!
     -- Average is calculated by multiplying with 1/(REG_AMOUNT + 1), 
     -- but we need an additional + 1 as this is the value we subtract from the new sum
   ) port map (
-    clk_i => clk_i,
+    clk_i => strobe_data_valid_i,
     reset_i => reset_i,
     data_i => data_i,
     data_o => data_last
@@ -57,6 +57,7 @@ begin
     strobe_data_valid_next <= strobe_data_valid_i;
     sum_next <= sum;
     if strobe_data_valid_i = '1' then
+      -- TODO: FIX removing too much (negative values)
       sum_next <= sum + resize(data_i, BIT_WIDTH + REG_AMOUNT) - resize(data_last, BIT_WIDTH + REG_AMOUNT);
     end if;
   end process Filter;
