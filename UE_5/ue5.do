@@ -27,6 +27,6 @@ add wave -divider Internal
 
 add wave -noupdate -color {Medium Slate Blue} -radix unsigned /servo_controller_tb/ServoController/pwm_servo_on_val
 
-run 10 ms
+run 100 ms
 # Set Zoom Level {from ms} {to ms}
-WaveRestoreZoom {0 ms} {10.5 ms}
+WaveRestoreZoom {0 ms} {105 ms}

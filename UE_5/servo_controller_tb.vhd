@@ -39,19 +39,19 @@ begin
 
     reset <= '0';
 
-    wait for 2 ms;
+    wait for 0 ms;
 
     pwm_on_value_i <= to_unsigned(1341, BIT_WIDTH); -- Example for very specicif value
     
-    wait for 2 ms;
+    wait for 20 ms;
     
     pwm_on_value_i <= to_unsigned(1500, BIT_WIDTH); -- 90°
 
-    wait for 2 ms;
+    wait for 20 ms;
 
     pwm_on_value_i <= to_unsigned(1742, BIT_WIDTH); -- Example for very specicif value
 
-    wait for 2 ms;
+    wait for 20 ms;
 
     pwm_on_value_i <= to_unsigned(2000, BIT_WIDTH); -- 180°
 

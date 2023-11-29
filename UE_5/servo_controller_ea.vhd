@@ -19,12 +19,10 @@ end entity servo_controller;
 architecture rtl of servo_controller is
     -- Sets the on-time for the pwm!
   signal pwm_servo_on_val : unsigned(SERVO_COUNTER_BIT_WIDTH - 1 downto 0);
-    -- Temporary Signal used for multiplication with SERVO_STEP_SIZE:
-  signal pwm_temp : unsigned(SERVO_COUNTER_BIT_WIDTH + INPUT_BIT_WIDTH - 1 downto 0);
 begin  
-  pwm_temp <= pwm_on_value_i * SERVO_STEP_SIZE;
-  pwm_servo_on_val <= pwm_temp(pwm_temp'high - INPUT_BIT_WIDTH downto 0);
-    
+
+  pwm_servo_on_val <= resize(pwm_on_value_i * SERVO_STEP_SIZE, SERVO_COUNTER_BIT_WIDTH);
+  
   PWM: entity work.PWM(rtl) generic map(
     COUNTER_LEN => SERVO_COUNTER_BIT_WIDTH
   ) port map (

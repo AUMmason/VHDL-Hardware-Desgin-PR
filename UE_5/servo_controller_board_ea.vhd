@@ -4,16 +4,16 @@ use IEEE.numeric_std.all;
 
 -- Top Level Entity for Servo Controller
 
-entity servo_controller_synth is
+entity servo_controller_board_ea is
   -- INPUT_BIT_WIDTH = log2(2000 + 1) = 11;
   port (
     signal clk_i, reset_i : in std_ulogic;
     signal pwm_on_value_i : in unsigned(11 - 1 downto 0); --- 1000 = 0°, 2000 180°
     signal servo_o : out std_ulogic
   );
-end entity servo_controller_synth;
+end entity servo_controller_board_ea;
 
-architecture synth of servo_controller_synth is
+architecture synth of servo_controller_board_ea is
   constant BIT_WIDTH : natural := 11;
 begin
   

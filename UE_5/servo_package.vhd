@@ -18,8 +18,8 @@ package servo_package is
   constant SERVO_SIGNAL_MAX : natural := SERVO_SIGNAL_MIN + SERVO_SIGNAL_RANGE; -- 180°
   -- TIMING SETUP:
   -- Clock Frequency is per Millisecond!
-  constant CLOCK_FREQUENCY_MS : natural := 50_000_000 / 1000; -- 50 MHz
-  constant SERVO_PWM_PERIOD_MS : natural := 2; -- ms 
+  constant CLOCK_FREQUENCY_MS : natural := 50e6 / 1000; -- 50 MHz
+  constant SERVO_PWM_PERIOD_MS : natural := 20; -- ms 
   constant SERVO_COUNTER_MIN : natural := CLOCK_FREQUENCY_MS;
   constant SERVO_COUNTER_MAX : natural := SERVO_PWM_PERIOD_MS * CLOCK_FREQUENCY_MS;
   constant SERVO_COUNTER_BIT_WIDTH : natural := integer( ceil(log2(real( SERVO_COUNTER_MAX ))) );
