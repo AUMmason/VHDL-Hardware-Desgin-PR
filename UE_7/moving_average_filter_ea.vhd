@@ -27,7 +27,13 @@ architecture rtl of moving_average_filter is
   signal strobe_data_valid_next : std_ulogic;
 begin
 
-  data_o <= resize(sum / REG_AMOUNT, BIT_WIDTH); -- TODO: sum * (1/REG_AMOUNT) how to do this?
+  data_o <= resize(sum / REG_AMOUNT, BIT_WIDTH); 
+  -- TODO: sum * (1/REG_AMOUNT) how to do this:
+  --  multiplikation durch zweierpotenz -> shift
+  --    alt: shift_right()  
+  --    modern: operatoren:
+  --      sum <= sra 3
+  --      sum <= sla 3
 
   ShiftRegister: entity work.unsigned_shift_register(rtl) generic map (
     BIT_WIDTH => BIT_WIDTH,

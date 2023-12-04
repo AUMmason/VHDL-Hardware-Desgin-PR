@@ -19,7 +19,7 @@ end entity servo_controller;
 architecture rtl of servo_controller is
     -- Sets the on-time for the pwm!
   signal pwm_servo_on_val : unsigned(SERVO_COUNTER_BIT_WIDTH - 1 downto 0);
-begin  
+begin
 
   pwm_servo_on_val <= resize(pwm_on_value_i * SERVO_STEP_SIZE, SERVO_COUNTER_BIT_WIDTH);
   
