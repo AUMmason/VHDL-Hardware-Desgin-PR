@@ -21,7 +21,7 @@ architecture Testbench of tilt_tb is
   signal pwm_on : unsigned(PWM_BIT_WIDTH - 1 downto 0);
 begin
   
-  Tilt: entity work.tilt_ea(rtl) generic map (
+  Tilt: entity work.tilt(rtl) generic map (
     ADC_BIT_WIDTH => ADC_BIT_WIDTH,
     SERVO_BIT_WIDTH => PWM_BIT_WIDTH
   ) port map (

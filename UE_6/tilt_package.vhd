@@ -8,12 +8,12 @@ package tilt_package is
 
   constant CLOCK_FREQ : natural := 50e6; -- 50 Mhz
   constant DELTA_ADC_PWM_FREQ : natural := 200e3; -- 200 kHz
-  -- Sampling and PWM Frequency should be the same as there would
+  
+  -- Note: Sampling and PWM Frequency should be the same as there would
   -- be no advantage in using a higher pwm frequency than the sampling
   -- frequency of the input signal
-  
-  constant ADC_SAMPLING_FREQ : natural := 50; -- 50 Hz
-  constant SERVO_PWM_FREQ : natural := 50; -- 50 Hz
+  constant DELTA_ADC_SAMPLING_FREQ : natural := 50; -- 50 Hz
+  constant SERVO_PWM_FREQ : natural := DELTA_ADC_SAMPLING_FREQ; -- 50 Hz
 
   -- Calculate ADC values for 0° and 180° respectively
   -- ADC Values can be between 0 and 250.

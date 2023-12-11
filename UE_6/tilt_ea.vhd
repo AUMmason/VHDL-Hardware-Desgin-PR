@@ -9,7 +9,7 @@ use work.tilt_package.all;
 -- convert adc value to input value for PWM Servo
 -- convert 0 - 250 unsigned to 1000 - 2000 unsigned 
 
-entity tilt_ea is
+entity tilt is
   generic (
     ADC_BIT_WIDTH : natural;
     SERVO_BIT_WIDTH : natural
@@ -20,9 +20,9 @@ entity tilt_ea is
     signal pwm_on_o : out unsigned(SERVO_BIT_WIDTH - 1 downto 0)
     -- SERVO_BIT_WIDTH can be derived from SERVO_SIGNAL_MAX in servo_package
   );
-end entity tilt_ea;
+end entity tilt;
 
-architecture rtl of tilt_ea is
+architecture rtl of tilt is
   -- Calculates the the ratio between SERVO_SIGNAL_RANGE and ADC_VALUE_RANGE 1000 / 50 = 20
   constant ADC_STEP_SIZE : unsigned(SERVO_BIT_WIDTH - 1 downto 0) := to_unsigned(SERVO_SIGNAL_RANGE / ADC_DEG_RANGE, SERVO_BIT_WIDTH);
   constant ADC_CORRECTION : unsigned(SERVO_BIT_WIDTH - 1 downto 0) := 
