@@ -6,7 +6,7 @@ use IEEE.math_real.all;
 architecture rtl of delta_adc is
   -- Derive Bitlength for internal signals from given generics
   constant STROBE_BIT_WIDTH: natural := integer( ceil(log2(real( SAMPLING_PERIOD ))) );
-  constant ADC_BIT_WIDTH: natural := integer( ceil(log2(real( PWM_PERIOD ))) );
+  -- ADC_BIT_WIDTH corresponds to the Sampling period (log2(Sampling_Period)) but must be given as a generic
   constant ADC_MAX_VALUE: unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(PWM_PERIOD, ADC_BIT_WIDTH);
 
   signal sampling_strobe, next_adc_valid_strobe : std_ulogic;
@@ -34,12 +34,14 @@ begin
   Clock: process(clk_i, reset_i)
   begin
     if reset_i = '1' then
-      ADC_Value <= (others => '0');
+      adc_value <= (others => '0');
     elsif rising_edge(clk_i) then
       adc_value <= next_adc_value;
       adc_valid_strobe_o <= next_adc_valid_strobe;
     end if;
   end process Clock;
+
+  adc_value_o <= adc_value;
 
   Sampler: process(sampling_strobe, adc_value)
   -- The sampling strobe is being sent multiple times during a PWM-Period
