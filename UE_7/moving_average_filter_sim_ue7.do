@@ -1,11 +1,11 @@
 quit -sim 
 
 # Files needed for Simulation
-vcom VHDL-Hardware-Desgin-PR\\UE_4\\strobe_generator_a.vhd
-vcom VHDL-Hardware-Desgin-PR\\UE_4\\strobe_generator_e.vhd
-vcom VHDL-Hardware-Desgin-PR\\UE_7\\unsigned_shift_register_ea.vhd
-vcom VHDL-Hardware-Desgin-PR\\UE_7\\moving_average_filter_tb.vhd
-vcom VHDL-Hardware-Desgin-PR\\UE_7\\moving_average_filter_ea.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_4/strobe_generator_a.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_4/strobe_generator_e.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_7/unsigned_shift_register_ea.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_7/moving_average_filter_tb.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_7/moving_average_filter_ea.vhd
 
 # Start Simulation
 vsim -voptargs="\+acc" -t ms moving_average_filter_tb

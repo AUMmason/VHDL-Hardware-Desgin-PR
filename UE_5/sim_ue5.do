@@ -1,11 +1,11 @@
 quit -sim 
 
 # Files needed for Simulation
-vcom ../UE_3/pwm_e.vhd
-vcom ../UE_3/pwm_a.vhd
-vcom servo_package.vhd
-vcom servo_controller_ea.vhd
-vcom servo_controller_tb.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_3/pwm_e.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_3/pwm_a.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_5/servo_package.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_5/servo_controller_ea.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_5/servo_controller_tb.vhd
 
 # Start Simulation
 vsim -voptargs="\+acc" -t ns servo_controller_tb

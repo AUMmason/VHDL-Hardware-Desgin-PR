@@ -2,10 +2,10 @@ quit -sim
 
 # Files needed for Simulation
 
-vcom ../UE_5/servo_package.vhd
-vcom tilt_package.vhd
-vcom tilt_ea.vhd
-vcom tilt_tb.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_5/servo_package.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_6/tilt_package.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_6/tilt_ea.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_6/tilt_tb.vhd
 
 # Start Simulation
 vsim -voptargs="\+acc" -t ns tilt_tb
