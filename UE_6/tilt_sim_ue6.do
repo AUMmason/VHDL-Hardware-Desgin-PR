@@ -23,9 +23,9 @@ add wave -divider Outputs
 add wave -noupdate -color Cyan -radix unsigned /tilt_tb/pwm_on
 
 # Label
-# add wave -divider Internal
-
-# add wave -noupdate -color {Medium Slate Blue} -radix unsigned /servo_controller_tb/ServoController/pwm_servo_on_val
+add wave -divider Constants
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_tb/tilt/ADC_STEP_SIZE
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_tb/tilt/ADC_CORRECTION
 
 run 600 ns
 # Set Zoom Level {from ns} {to ns}

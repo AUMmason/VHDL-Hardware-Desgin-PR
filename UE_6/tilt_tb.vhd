@@ -21,7 +21,7 @@ architecture Testbench of tilt_tb is
   signal pwm_on : unsigned(PWM_BIT_WIDTH - 1 downto 0);
 begin
   
-  Tilt: entity work.tilt(rtl) generic map (
+  Tilt: entity work.tilt_ea(rtl) generic map (
     ADC_BIT_WIDTH => ADC_BIT_WIDTH,
     SERVO_BIT_WIDTH => PWM_BIT_WIDTH
   ) port map (
@@ -47,7 +47,36 @@ begin
     wait for 100 ns;
     adc_value <= to_unsigned(100, ADC_BIT_WIDTH);
 
-    wait for 100 ns;
+
+    wait for 10 ns;
+    adc_value <= to_unsigned(105, ADC_BIT_WIDTH);
+
+    wait for 10 ns;
+    adc_value <= to_unsigned(112, ADC_BIT_WIDTH);
+
+    wait for 10 ns;
+    adc_value <= to_unsigned(117, ADC_BIT_WIDTH);
+
+    wait for 10 ns;
+    adc_value <= to_unsigned(121, ADC_BIT_WIDTH);
+
+    wait for 10 ns;
+    adc_value <= to_unsigned(125, ADC_BIT_WIDTH); -- 90°
+
+    wait for 10 ns;
+    adc_value <= to_unsigned(132, ADC_BIT_WIDTH);
+    
+    wait for 10 ns;
+    adc_value <= to_unsigned(138, ADC_BIT_WIDTH);
+
+    wait for 10 ns;
+    adc_value <= to_unsigned(143, ADC_BIT_WIDTH);
+
+    wait for 10 ns;
+    adc_value <= to_unsigned(147, ADC_BIT_WIDTH);
+
+
+    wait for 10 ns;
     adc_value <= to_unsigned(150, ADC_BIT_WIDTH);
 
     wait for 100 ns;

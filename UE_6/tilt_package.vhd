@@ -24,17 +24,17 @@ package tilt_package is
   -- 0° and 180° by taking the accelerometer and the maximum adc
   -- value into account.
 
-  -- TODO fix rounding errors! (Use real for better precision)
+  -- Note: Calculation of constants can be achieved using the natural type
+  -- since there is no rounding required for the chosen value above
+  constant ADC_VALUE_RANGE : natural := CLOCK_FREQ / DELTA_ADC_PWM_FREQ;
+  constant SUPPLY_VOLTAGE : natural := 5; -- V
+  constant MIN_VOLTAGE : natural := 2; --V (= 0°)
+  constant MAX_VOLTAGE : natural := 3; --V (= 180°)
 
-  constant ADC_VALUE_RANGE : real := real(CLOCK_FREQ) / real(DELTA_ADC_PWM_FREQ);
-  constant SUPPLY_VOLTAGE : real := 5.0; -- V
-  constant MIN_VOLTAGE : real := 2.0; --V (= 0°)
-  constant MAX_VOLTAGE : real := 3.0; --V (= 180°)
+  constant ADC_VALUE_0_DEG : natural := (ADC_VALUE_RANGE * MIN_VOLTAGE) / SUPPLY_VOLTAGE; -- 100
+  constant ADC_VALUE_180_DEG : natural := (ADC_VALUE_RANGE * MAX_VOLTAGE) / SUPPLY_VOLTAGE; -- 150
 
-  constant ADC_VALUE_0_DEG : real :=  (ADC_VALUE_RANGE  * MIN_VOLTAGE) / SUPPLY_VOLTAGE;
-  constant ADC_VALUE_180_DEG : real := (ADC_VALUE_RANGE * MAX_VOLTAGE) / SUPPLY_VOLTAGE;
-
-  constant ADC_DEG_RANGE : natural := natural(ADC_VALUE_180_DEG - ADC_VALUE_0_DEG);
+  constant ADC_DEG_RANGE : natural := ADC_VALUE_180_DEG - ADC_VALUE_0_DEG;
 
   
 end package tilt_package;
