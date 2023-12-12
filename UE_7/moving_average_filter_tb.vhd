@@ -2,17 +2,17 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 use IEEE.math_real.all;
+-- Internal Package
+use work.tilt_package.all;
 
 entity moving_average_filter_tb is
 end entity moving_average_filter_tb;
 
 architecture rtl of moving_average_filter_tb is
-  constant FILTER_ORDER : natural := 7;
-
-  constant BIT_WIDTH : natural := 4;
+  constant BIT_WIDTH : natural := integer( ceil(log2(real( ADC_VALUE_RANGE ))) );
   constant CLK_FREQUENCY : natural := 50;
   constant CLK_PERIOD : time := 1000 ms / CLK_FREQUENCY;
-  constant REGISTER_LENGTH : natural := 5;
+  constant REGISTER_LENGTH : natural := 6;
 
   constant STROBE_PERIOD : natural := 2;
 
@@ -55,47 +55,47 @@ begin
 
     wait for 10 ms;
 
-    data_i <= "0010";
+    data_i <= to_unsigned(120, BIT_WIDTH);
 
-    wait for 40 ms;
+    wait for 120 ms;
 
-    data_i <= "1110";
+    data_i <= to_unsigned(132, BIT_WIDTH);
 
-    wait for 40 ms;
+    wait for 120 ms;
 
-    data_i <= "1100";
+    data_i <= to_unsigned(145, BIT_WIDTH);
 
-    wait for 40 ms;
+    wait for 120 ms;
 
-    data_i <= "1001";
+    data_i <= to_unsigned(200, BIT_WIDTH);
 
-    wait for 40 ms;
+    wait for 120 ms;
 
-    data_i <= "1111";
+    data_i <= to_unsigned(80, BIT_WIDTH);
 
-    wait for 40 ms;
+    wait for 120 ms;
 
-    data_i <= "0110";
+    data_i <= to_unsigned(214, BIT_WIDTH);
 
-    wait for 40 ms;
+    wait for 120 ms;
 
-    data_i <= "0111";
+    data_i <= to_unsigned(13, BIT_WIDTH);
 
-    wait for 40 ms;
+    wait for 120 ms;
 
-    data_i <= "0101";
+    data_i <= to_unsigned(184, BIT_WIDTH);
 
-    wait for 40 ms;
+    wait for 120 ms;
 
-    data_i <= "1011";
+    data_i <= to_unsigned(74, BIT_WIDTH);
 
-    wait for 40 ms;
+    wait for 120 ms;
 
-    data_i <= "0100";
+    data_i <= to_unsigned(98, BIT_WIDTH);
 
-    wait for 40 ms;
+    wait for 120 ms;
 
-    data_i <= "0000";
+    data_i <= to_unsigned(0, BIT_WIDTH);
     
     wait;
 
