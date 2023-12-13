@@ -15,6 +15,9 @@ package tilt_package is
   constant DELTA_ADC_SAMPLING_FREQ : natural := 50; -- 50 Hz
   constant SERVO_PWM_FREQ : natural := DELTA_ADC_SAMPLING_FREQ; -- 50 Hz
 
+  -- Moving Average Filter
+  constant MOV_AVG_LENGTH : natural := 6;
+
   -- Calculate ADC values for 0° and 180° respectively
   -- ADC Values can be between 0 and 250.
   -- The Accelerometer outputs 2 V for 0° and 3 V for 180°

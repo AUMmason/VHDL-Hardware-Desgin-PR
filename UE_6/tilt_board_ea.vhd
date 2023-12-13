@@ -9,6 +9,7 @@ use work.tilt_package.all;
 entity tilt_board is
   port (
     -- Inputs
+    signal enable_filter_i : in std_ulogic;
     signal axis_comp_async_i : in std_ulogic;
     signal clk_i, reset_i : in std_ulogic;
     -- Outputs
@@ -29,7 +30,8 @@ architecture rtl of tilt_board is
   
   signal axis_comp_sync : std_ulogic;
   signal adc_valid_strobe : std_ulogic;
-  signal adc_value, hold_adc_value : unsigned(ADC_BIT_WIDTH - 1 downto 0);
+  signal adc_filterd_valid_strobe : std_ulogic;
+  signal adc_value, adc_value_filtered, hold_adc_value : unsigned(ADC_BIT_WIDTH - 1 downto 0);
 
   signal pwm_servo_on_counter_val : unsigned(SERVO_PWM_BIT_WIDTH - 1 downto 0);
   
@@ -59,17 +61,30 @@ begin
     adc_value_o => adc_value
   );
 
+  MovingAverageFilter: entity work.moving_average_filter(rtl) generic map (
+    FILTER_ORDER => MOV_AVG_LENGTH,
+    BIT_WIDTH => ADC_BIT_WIDTH
+  ) port map (
+    enable_i => enable_filter_i,
+    clk_i => clk_i,
+    reset_i => reset_i,
+    strobe_data_valid_i => adc_valid_strobe,
+    data_i => adc_value,
+    data_o => adc_value_filtered,
+    strobe_data_valid_o => adc_filterd_valid_strobe
+  );
+
   HoldValueOnStrobe : entity work.hold_value_on_strobe(rtl) generic map (
     BIT_WIDTH => ADC_BIT_WIDTH
   ) port map (
-    strobe_i => adc_valid_strobe,
+    strobe_i => adc_filterd_valid_strobe,
     clk_i => clk_i,
     reset_i => reset_i,
-    value_i => adc_value,
+    value_i => adc_value_filtered,
     hold_value_o => hold_adc_value
   );
 
-    binary <= (BIN2BCD_BIT_WIDTH - 1 downto ADC_BIT_WIDTH => '0') & std_ulogic_vector(hold_adc_value);
+  binary <= (BIN2BCD_BIT_WIDTH - 1 downto ADC_BIT_WIDTH => '0') & std_ulogic_vector(hold_adc_value);
 
   Bin2Bcd : entity work.bin2bcd(rtl) port map (
     binary_i => binary,

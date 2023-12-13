@@ -13,9 +13,10 @@ architecture testbench of tilt_board_tb is
 
   constant INPUT_MAX : natural := 2000;
   constant BIT_WIDTH : natural := integer( ceil(log2(real( INPUT_MAX ))) );
-  constant CLK_FREQUENCY : integer := 50_000_000; -- 50 MHz
+  constant CLK_FREQUENCY : integer := 50e6; -- 50 MHz
   constant CLK_PERIOD : time := 1000 ms / CLK_FREQUENCY; -- T = 1/f
 
+  signal enable_filter : std_ulogic := '1';
   signal clk, reset : std_ulogic := '0';
   
   signal axis_comp_async : std_ulogic;
@@ -23,10 +24,10 @@ architecture testbench of tilt_board_tb is
   signal servo_axis_pwm_pin : std_ulogic;
 
   signal LED_X0_0, LED_0X_0, LED_00_X : std_ulogic_vector(0 to 6);
-
 begin
 
   TiltX: entity work.tilt_board(rtl) port map (
+    enable_filter_i => enable_filter,
     clk_i => clk,
     reset_i => reset,
     axis_comp_async_i => axis_comp_async,
@@ -50,10 +51,22 @@ begin
     reset <= '0';
     
     axis_comp_async <= '1';
-    wait for 5000 ms;
+    wait for 2500 ms;
+
+    enable_filter <= '0';
+    wait for 500 ms;
     
+    enable_filter <= '1';
+    wait for 2000 ms;
+
     axis_comp_async <= '0';
-    wait for 5000 ms;
+    wait for 2500 ms;
+
+    enable_filter <= '0';
+    wait for 500 ms;
+    
+    enable_filter <= '1';
+    wait for 2000 ms;
     wait;
 
   end process Stimuli;
