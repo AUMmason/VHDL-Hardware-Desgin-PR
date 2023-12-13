@@ -32,8 +32,9 @@ architecture rtl of tilt_board is
   signal adc_value, hold_adc_value : unsigned(ADC_BIT_WIDTH - 1 downto 0);
 
   signal pwm_servo_on_counter_val : unsigned(SERVO_PWM_BIT_WIDTH - 1 downto 0);
-
-  signal binary : std_ulogic_vector(BIN2BCD_BIT_WIDTH - 1 downto 0) := std_ulogic_vector(resize(hold_adc_value, BIN2BCD_BIT_WIDTH));
+  
+  -- For 7 Segment Display
+  signal binary : std_ulogic_vector(BIN2BCD_BIT_WIDTH - 1 downto 0);
 begin
   
   Synchronizer : entity work.sync_chain(rtl) generic map (
@@ -67,6 +68,8 @@ begin
     value_i => adc_value,
     hold_value_o => hold_adc_value
   );
+
+    binary <= (BIN2BCD_BIT_WIDTH - 1 downto ADC_BIT_WIDTH => '0') & std_ulogic_vector(hold_adc_value);
 
   Bin2Bcd : entity work.bin2bcd(rtl) port map (
     binary_i => binary,
