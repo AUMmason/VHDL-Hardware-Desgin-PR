@@ -5,7 +5,7 @@ use IEEE.numeric_std.all;
 entity unsigned_shift_register is
   generic (
     BIT_WIDTH : natural;
-    LENGTH : natural
+    LENGTH : positive range 2 to 128 -- can be changed
   );
   port (
     signal clk_i, reset_i : in std_ulogic;

@@ -16,6 +16,7 @@ add wave -divider Inputs
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /moving_average_filter_tb/clk
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /moving_average_filter_tb/reset
 add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/strobe_valid
+add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/enable
 add wave -noupdate -radix unsigned /moving_average_filter_tb/data_i
 
 # Label

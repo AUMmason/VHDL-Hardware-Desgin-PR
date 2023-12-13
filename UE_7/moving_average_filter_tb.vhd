@@ -14,8 +14,9 @@ architecture rtl of moving_average_filter_tb is
   constant CLK_PERIOD : time := 1000 ms / CLK_FREQUENCY;
   constant REGISTER_LENGTH : natural := 6;
 
-  constant STROBE_PERIOD : natural := 2;
+  constant STROBE_PERIOD : natural := 3;
 
+  signal enable : std_ulogic := '1';
   signal clk, reset : std_ulogic := '0';
   signal data_i, data_o : unsigned(BIT_WIDTH - 1 downto 0) := (others => '0');
 
@@ -37,6 +38,7 @@ begin
     BIT_WIDTH => BIT_WIDTH,
     FILTER_ORDER => REGISTER_LENGTH
   ) port map (
+    enable_i => enable,
     clk_i => clk,
     reset_i => reset,
     data_i => data_i,
@@ -71,6 +73,7 @@ begin
 
     wait for 120 ms;
 
+    enable <= '0';
     data_i <= to_unsigned(80, BIT_WIDTH);
 
     wait for 120 ms;
@@ -83,6 +86,7 @@ begin
 
     wait for 120 ms;
 
+    enable <= '1';
     data_i <= to_unsigned(184, BIT_WIDTH);
 
     wait for 120 ms;

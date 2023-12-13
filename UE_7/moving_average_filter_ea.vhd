@@ -10,6 +10,7 @@ entity moving_average_filter is
     FILTER_ORDER: natural -- = N
   );
   port (
+    signal enable_i : in std_ulogic;
     signal clk_i, reset_i, strobe_data_valid_i : in std_ulogic;
     signal data_i : in unsigned(BIT_WIDTH - 1 downto 0);
     signal data_o : out unsigned(BIT_WIDTH - 1 downto 0);
@@ -18,7 +19,8 @@ entity moving_average_filter is
 end entity moving_average_filter;
 
 architecture rtl of moving_average_filter is
-  constant CLAMPED_FILTER_ORDER : natural := integer( ceil(log2(real(FILTER_ORDER + 1))) );
+  constant CLAMPED_FILTER_ORDER : natural := integer( ceil(log2(real(FILTER_ORDER + 1))) ); 
+  -- (Division requires N + 1)
   constant REG_AMOUNT : natural := 2 ** CLAMPED_FILTER_ORDER;
     
   signal sum : unsigned(BIT_WIDTH + REG_AMOUNT - 1 downto 0);
@@ -29,7 +31,7 @@ architecture rtl of moving_average_filter is
 begin
 
   -- Division of 2^n equals a bit shift right by n:
-  data_o <= resize(sum srl CLAMPED_FILTER_ORDER, BIT_WIDTH); 
+  data_o <= resize(sum srl CLAMPED_FILTER_ORDER, BIT_WIDTH) when enable_i = '1' else data_i; 
 
   ShiftRegister: entity work.unsigned_shift_register(rtl) generic map (
     BIT_WIDTH => BIT_WIDTH,
