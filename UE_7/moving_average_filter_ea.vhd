@@ -35,7 +35,7 @@ begin
 
   ShiftRegister: entity work.unsigned_shift_register(rtl) generic map (
     BIT_WIDTH => BIT_WIDTH,
-    LENGTH => REG_AMOUNT + 1 -- additional register needed to subtract last value from sum
+    LENGTH => REG_AMOUNT -- + 1 -- no additional register needed because of sum implementation below
   ) port map (
     clk_i => strobe_data_valid_i,
     reset_i => reset_i,

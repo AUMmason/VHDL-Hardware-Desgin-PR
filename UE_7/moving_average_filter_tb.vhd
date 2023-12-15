@@ -73,7 +73,7 @@ begin
 
     wait for 120 ms;
 
-    enable <= '0';
+    -- enable <= '0';
     data_i <= to_unsigned(80, BIT_WIDTH);
 
     wait for 120 ms;
@@ -86,7 +86,7 @@ begin
 
     wait for 120 ms;
 
-    enable <= '1';
+    -- enable <= '1';
     data_i <= to_unsigned(184, BIT_WIDTH);
 
     wait for 120 ms;

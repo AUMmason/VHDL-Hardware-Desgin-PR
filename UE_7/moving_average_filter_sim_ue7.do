@@ -29,10 +29,12 @@ add wave -noupdate -radix unsigned /moving_average_filter_tb/data_o
 add wave -divider Internal
 
 add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_Average/sum
-add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_Average/sum_next
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /moving_average_filter_tb/Moving_Average/sum_next
 add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_Average/data_last
 add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_Average/data_o
 add wave -noupdate -color {Cornflower Blue} -radix unsigned /moving_average_filter_tb/Moving_Average/REG_AMOUNT
+add wave -noupdate -radix unsigned /moving_average_filter_tb/Moving_Average/ShiftRegister/data_chain
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /moving_average_filter_tb/Moving_Average/ShiftRegister/data_chain_next
 
 run 2000 ms
 # Set Zoom Level {from ms} {to ms}
