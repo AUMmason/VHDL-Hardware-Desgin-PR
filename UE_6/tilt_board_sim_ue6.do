@@ -33,11 +33,11 @@ add wave -noupdate -color Cyan -radix symbolic /tilt_board_tb/axis_comp_async
 add wave -divider Outputs
 
 add wave -noupdate -color Cyan -radix symbolic /tilt_board_tb/axis_pwm_pin
-add wave -noupdate -color Cyan -radix symbolic /tilt_board_tb/servo_axis_pwm_pin
+add wave -noupdate -color Cyan -radix symbolic /tilt_board_tb/axis_servo_pwm_pin
 
-add wave -noupdate -color Cyan -radix binary /tilt_board_tb/LED_X0_0
-add wave -noupdate -color Cyan -radix binary /tilt_board_tb/LED_0X_0
-add wave -noupdate -color Cyan -radix binary /tilt_board_tb/LED_00_X
+add wave -noupdate -color Cyan -radix binary /tilt_board_tb/LED_X00
+add wave -noupdate -color Cyan -radix binary /tilt_board_tb/LED_0X0
+add wave -noupdate -color Cyan -radix binary /tilt_board_tb/LED_00X
 
 # Label
 add wave -divider Constants

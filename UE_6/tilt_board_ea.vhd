@@ -14,9 +14,9 @@ entity tilt_board is
     signal clk_i, reset_i : in std_ulogic;
     -- Outputs
     signal axis_pwm_pin_o : out std_ulogic;
-    signal servo_axis_pwm_pin_o : out std_ulogic;
+    signal axis_servo_pwm_pin_o : out std_ulogic;
     -- 3x Outputs for each 7seg Display (for on Axis) (6 in Total)
-    signal LED_X0_0, LED_0X_0, LED_00_X : out std_ulogic_vector(0 to 6)
+    signal LED_X00_o, LED_0X0_o, LED_00X_o : out std_ulogic_vector(0 to 6)
   );
 end entity tilt_board;
 
@@ -95,17 +95,17 @@ begin
 
   BcdTo7Seg_Ones : entity work.bcd_to_7seg(rtl) port map (
     bcd_i => ones,
-    LED_o => LED_00_X
+    LED_o => LED_00X_o
   );
 
   BcdTo7Seg_Tens : entity work.bcd_to_7seg(rtl) port map (
     bcd_i => tens,
-    LED_o => LED_0X_0
+    LED_o => LED_0X0_o
   );
 
   BcdTo7Seg_Hundreds : entity work.bcd_to_7seg(rtl) port map (
     bcd_i => hundreds,
-    LED_o => LED_X0_0
+    LED_o => LED_X00_o
   );
 
   TiltAxis : entity work.tilt(rtl) generic map (
@@ -124,7 +124,7 @@ begin
     clk_i => clk_i,
     reset_i => reset_i,
     pwm_on_value_i => pwm_servo_on_counter_val,
-    servo_o => servo_axis_pwm_pin_o
+    servo_o => axis_servo_pwm_pin_o
   );
 
 end architecture rtl;

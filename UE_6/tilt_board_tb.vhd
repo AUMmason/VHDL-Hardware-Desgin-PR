@@ -21,9 +21,9 @@ architecture testbench of tilt_board_tb is
   
   signal axis_comp_async : std_ulogic;
   signal axis_pwm_pin : std_ulogic;
-  signal servo_axis_pwm_pin : std_ulogic;
+  signal axis_servo_pwm_pin : std_ulogic;
 
-  signal LED_X0_0, LED_0X_0, LED_00_X : std_ulogic_vector(0 to 6);
+  signal LED_X00, LED_0X0, LED_00X : std_ulogic_vector(0 to 6);
 begin
 
   TiltX: entity work.tilt_board(rtl) port map (
@@ -32,11 +32,11 @@ begin
     reset_i => reset,
     axis_comp_async_i => axis_comp_async,
     axis_pwm_pin_o => axis_pwm_pin,
-    servo_axis_pwm_pin_o => servo_axis_pwm_pin,
+    axis_servo_pwm_pin_o => axis_servo_pwm_pin,
     
-    LED_X0_0 => LED_X0_0,
-    LED_0X_0 => LED_0X_0,
-    LED_00_X => LED_00_X
+    LED_X00_o => LED_X00,
+    LED_0X0_o => LED_0X0,
+    LED_00X_o => LED_00X
   );
 
   clk <= not clk after CLK_PERIOD / 2;
