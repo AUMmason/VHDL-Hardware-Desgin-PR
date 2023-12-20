@@ -28,6 +28,7 @@ add wave -divider Inputs
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_board_tb/reset
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_board_tb/clk
 add wave -noupdate -color Cyan -radix symbolic /tilt_board_tb/axis_comp_async
+add wave -noupdate -color Cyan -radix symbolic /tilt_board_tb/enable_filter
 
 # Label
 add wave -divider Outputs
@@ -40,13 +41,15 @@ add wave -noupdate -color Cyan -radix binary /tilt_board_tb/LED_0X0
 add wave -noupdate -color Cyan -radix binary /tilt_board_tb/LED_00X
 
 # Label
-add wave -divider Constants
-add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_tb/TiltX/adc_value
-add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_tb/TiltX/hold_adc_value
-add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_board_tb/TiltX/adc_valid_strobe
+add wave -divider {ADC-Values and Valid Strobes}
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_tb/TiltX/adc_valid_strobe
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_tb/TiltX/adc_value_filtered
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_tb/TiltX/adc_filterd_valid_strobe
+
+add wave -divider {PWM and Binary}
 add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_tb/TiltX/pwm_servo_on_counter_val
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_board_tb/TiltX/binary
 
-run 10 sec
+run 10.2 sec
 # Set Zoom Level {from ms} {to ms}
-WaveRestoreZoom {0 ms} {10 sec}
+WaveRestoreZoom {0 ms} {10.22 sec}
