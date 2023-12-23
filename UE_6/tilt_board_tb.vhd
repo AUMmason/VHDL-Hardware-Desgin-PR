@@ -51,22 +51,11 @@ begin
     reset <= '0';
     
     axis_comp_async <= '1';
-    wait for 2500 ms;
-
-    enable_filter <= '1';
-    wait for 500 ms;
-    
-    enable_filter <= '0';
-    wait for 2000 ms;
+    wait for 5050 ms;
 
     axis_comp_async <= '0';
-    wait for 2500 ms;
+    wait for 5050 ms;
 
-    enable_filter <= '1';
-    wait for 500 ms;
-    
-    enable_filter <= '0';
-    wait for 2000 ms;
     wait;
 
   end process Stimuli;

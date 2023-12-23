@@ -22,13 +22,25 @@ entity tilt_xy_board is
 end entity tilt_xy_board;
 
 architecture rtl of tilt_xy_board is
-  
+  signal reset, enable_filter : std_ulogic;
 begin
-  
-  TiltX: entity work.tilt_board(rtl) port map (
-    enable_filter_i => enable_filter_i,
+
+  reset <= not reset_i;
+
+  -- Entprellung des Filter-Switches
+  Synchronizer: entity work.sync_chain(rtl) generic map (
+    CHAIN_LENGTH => 2
+  ) port map (
     clk_i => clk_i,
-    reset_i => reset_i,
+    reset_i => reset,
+    Async_i => enable_filter_i,
+    Sync_o => enable_filter
+  );
+
+  TiltX: entity work.tilt_board(rtl) port map (
+    enable_filter_i => enable_filter,
+    clk_i => clk_i,
+    reset_i => reset,
     axis_comp_async_i => x_comp_async_i,
     axis_pwm_pin_o => x_pwm_pin_o,
     axis_servo_pwm_pin_o => x_servo_pwm_pin_o,
@@ -38,9 +50,9 @@ begin
   );
 
   TiltY: entity work.tilt_board(rtl) port map (
-    enable_filter_i => enable_filter_i,
+    enable_filter_i => enable_filter,
     clk_i => clk_i,
-    reset_i => reset_i,
+    reset_i => reset,
     axis_comp_async_i => y_comp_async_i,
     axis_pwm_pin_o => y_pwm_pin_o,
     axis_servo_pwm_pin_o => y_servo_pwm_pin_o,
