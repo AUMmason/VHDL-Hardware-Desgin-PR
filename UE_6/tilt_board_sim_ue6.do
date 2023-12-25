@@ -20,7 +20,7 @@ vcom VHDL-Hardware-Desgin-PR/UE_6/tilt_board_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_6/tilt_board_tb.vhd
 
 # Start Simulation
-vsim -voptargs="\+acc" -t ns tilt_board_tb
+vsim -voptargs="\+acc" -t ns tilt_board_tb -wlf tilt_ma_filter_sim.wlf
 
 # Label
 add wave -divider Inputs
@@ -50,6 +50,14 @@ add wave -divider {PWM and Binary}
 add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_tb/TiltX/pwm_servo_on_counter_val
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_board_tb/TiltX/binary
 
-run 10.2 sec
+add wave -divider {Moving Average Filter}
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_tb/TiltX/MovingAverageFilter/data_i
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_tb/TiltX/MovingAverageFilter/sum
+add wave -noupdate -radix unsigned /tilt_board_tb/TiltX/MovingAverageFilter/data_o
+add wave -noupdate -radix unsigned /tilt_board_tb/TiltX/MovingAverageFilter/data_last
+add wave -noupdate -radix unsigned /tilt_board_tb/TiltX/MovingAverageFilter/strobe_data_valid_i
+add wave -noupdate -radix unsigned /tilt_board_tb/TiltX/MovingAverageFilter/strobe_data_valid_o
+
+run 11 sec
 # Set Zoom Level {from ms} {to ms}
-WaveRestoreZoom {0 ms} {10.22 sec}
+WaveRestoreZoom {0 ms} {11 sec}

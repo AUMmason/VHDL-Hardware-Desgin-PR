@@ -16,7 +16,7 @@ architecture testbench of tilt_board_tb is
   constant CLK_FREQUENCY : integer := 50e6; -- 50 MHz
   constant CLK_PERIOD : time := 1000 ms / CLK_FREQUENCY; -- T = 1/f
 
-  signal enable_filter : std_ulogic := '0';
+  signal enable_filter : std_ulogic := '1';
   signal clk, reset : std_ulogic := '0';
   
   signal axis_comp_async : std_ulogic;
@@ -43,7 +43,6 @@ begin
   
   Stimuli: process is
   begin
-    -- report std_ulogic'image(signal);
     reset <= '1';
     axis_comp_async <= '1';
     
@@ -51,10 +50,19 @@ begin
     reset <= '0';
     
     axis_comp_async <= '1';
-    wait for 5050 ms;
+
+    wait for 500 ms;
+
+    enable_filter <= '0';
+
+    wait for 250 ms;
+
+    enable_filter <= '1';
+
+    wait for 4750 ms;
 
     axis_comp_async <= '0';
-    wait for 5050 ms;
+    wait for 5500 ms;
 
     wait;
 

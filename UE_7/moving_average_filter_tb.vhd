@@ -57,48 +57,56 @@ begin
 
     wait for 10 ms;
 
+    data_i <= to_unsigned(250, BIT_WIDTH);
+    
+    wait for 600 ms;
+
+    data_i <= to_unsigned(0, BIT_WIDTH);
+
+    wait for 600 ms;
+
     data_i <= to_unsigned(120, BIT_WIDTH);
 
-    wait for 120 ms;
+    wait for 60 ms;
 
-    data_i <= to_unsigned(132, BIT_WIDTH);
+    data_i <= to_unsigned(85, BIT_WIDTH);
 
-    wait for 120 ms;
+    wait for 60 ms;
 
     data_i <= to_unsigned(145, BIT_WIDTH);
 
-    wait for 120 ms;
+    wait for 60 ms;
 
-    data_i <= to_unsigned(200, BIT_WIDTH);
+    data_i <= to_unsigned(15, BIT_WIDTH);
 
-    wait for 120 ms;
+    wait for 60 ms;
 
-    -- enable <= '0';
-    data_i <= to_unsigned(80, BIT_WIDTH);
+    data_i <= to_unsigned(231, BIT_WIDTH);
 
-    wait for 120 ms;
+    wait for 60 ms;
 
     data_i <= to_unsigned(214, BIT_WIDTH);
 
-    wait for 120 ms;
+    wait for 60 ms;
 
     data_i <= to_unsigned(13, BIT_WIDTH);
 
-    wait for 120 ms;
+    wait for 60 ms;
 
-    -- enable <= '1';
-    data_i <= to_unsigned(184, BIT_WIDTH);
+    data_i <= to_unsigned(140, BIT_WIDTH);
 
-    wait for 120 ms;
+    wait for 60 ms;
 
-    data_i <= to_unsigned(74, BIT_WIDTH);
+    enable <= '0';
+    data_i <= to_unsigned(100, BIT_WIDTH);
 
-    wait for 120 ms;
+    wait for 60 ms;
 
-    data_i <= to_unsigned(98, BIT_WIDTH);
+    data_i <= to_unsigned(70, BIT_WIDTH);
 
-    wait for 120 ms;
+    wait for 60 ms;
 
+    enable <= '1';
     data_i <= to_unsigned(0, BIT_WIDTH);
     
     wait;

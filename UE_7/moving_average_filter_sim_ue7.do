@@ -15,7 +15,7 @@ add wave -divider Inputs
 
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /moving_average_filter_tb/clk
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /moving_average_filter_tb/reset
-add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/strobe_valid
+add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/strobe
 add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/enable
 add wave -noupdate -radix unsigned /moving_average_filter_tb/data_i
 
@@ -36,6 +36,6 @@ add wave -noupdate -color {Cornflower Blue} -radix unsigned /moving_average_filt
 add wave -noupdate -radix unsigned /moving_average_filter_tb/Moving_Average/ShiftRegister/data_chain
 add wave -noupdate -color {Cornflower Blue} -radix unsigned /moving_average_filter_tb/Moving_Average/ShiftRegister/data_chain_next
 
-run 2000 ms
+run 2500 ms
 # Set Zoom Level {from ms} {to ms}
-WaveRestoreZoom {0 ms} {2000 ms}
+WaveRestoreZoom {0 ms} {2550 ms}

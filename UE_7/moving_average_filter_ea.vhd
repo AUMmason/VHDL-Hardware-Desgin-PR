@@ -19,9 +19,11 @@ entity moving_average_filter is
 end entity moving_average_filter;
 
 architecture rtl of moving_average_filter is
+  -- (Division requires N + 1 according to specification):
+  -- The code below calculates a N so that (N + 1) is a power of 2 (which is needed to perform a division)
   constant CLAMPED_FILTER_ORDER : natural := integer( ceil(log2(real(FILTER_ORDER + 1))) ); 
-  -- (Division requires N + 1)
-  constant REG_AMOUNT : natural := 2 ** CLAMPED_FILTER_ORDER;
+  constant REG_AMOUNT : natural := 2 ** CLAMPED_FILTER_ORDER - 1;
+  -- The amount of registers is equal to N so a subtraction of 1 is needed.
     
   signal sum : unsigned(BIT_WIDTH + REG_AMOUNT - 1 downto 0);
   signal sum_next : unsigned(BIT_WIDTH + REG_AMOUNT - 1 downto 0);
@@ -30,7 +32,7 @@ architecture rtl of moving_average_filter is
   signal strobe_data_valid_next : std_ulogic;
 begin
 
-  -- Division of 2^n equals a bit shift right by n:
+  -- Division of a number that is a power n of 2 equals a bit shift right by n:
   data_o <= resize(sum srl CLAMPED_FILTER_ORDER, BIT_WIDTH) when enable_i = '1' else data_i; 
 
   ShiftRegister: entity work.unsigned_shift_register(rtl) generic map (
