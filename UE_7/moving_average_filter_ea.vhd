@@ -22,8 +22,7 @@ architecture rtl of moving_average_filter is
   -- (Division requires N + 1 according to specification):
   -- The code below calculates a N so that (N + 1) is a power of 2 (which is needed to perform a division)
   constant CLAMPED_FILTER_ORDER : natural := integer( ceil(log2(real(FILTER_ORDER + 1))) ); 
-  constant REG_AMOUNT : natural := 2 ** CLAMPED_FILTER_ORDER - 1;
-  -- The amount of registers is equal to N so a subtraction of 1 is needed.
+  constant REG_AMOUNT : natural := 2 ** CLAMPED_FILTER_ORDER;
     
   signal sum : unsigned(BIT_WIDTH + REG_AMOUNT - 1 downto 0);
   signal sum_next : unsigned(BIT_WIDTH + REG_AMOUNT - 1 downto 0);
@@ -56,17 +55,12 @@ begin
     end if;
   end process clk;
 
-  Filter: process(data_i, strobe_data_valid_i)
+  Filter: process(strobe_data_valid_i, data_i, data_last)
   begin
     strobe_data_valid_next <= strobe_data_valid_i;
     sum_next <= sum;
     if strobe_data_valid_i = '1' then
-      if sum >= resize(data_last, BIT_WIDTH + REG_AMOUNT) then
-        sum_next <= sum + resize(data_i, BIT_WIDTH + REG_AMOUNT) - resize(data_last, BIT_WIDTH + REG_AMOUNT);
-      else 
-        -- clamp values in order to prevent underflow!
-        sum_next <= to_unsigned(0, BIT_WIDTH + REG_AMOUNT);
-      end if;
+      sum_next <= sum + resize(data_i, BIT_WIDTH + REG_AMOUNT) - resize(data_last, BIT_WIDTH + REG_AMOUNT);
     end if;
   end process Filter;
 

@@ -97,6 +97,10 @@ begin
 
     wait for 60 ms;
 
+    data_i <= to_unsigned(56, BIT_WIDTH);
+
+    wait for 60 ms;
+
     enable <= '0';
     data_i <= to_unsigned(100, BIT_WIDTH);
 
