@@ -94,10 +94,10 @@ begin
   btn_actions: process(sw_select_axis, sw_enable_debug_mode, sw_select_increment_amount, btn_increase, btn_decrease)
   begin
     adc_value_x_next <= adc_value_x;
-    adc_value_x_next <= adc_value_x;
+    adc_value_y_next <= adc_value_y;
     adc_valid_strobe_next <= '0'; -- Is set to zero because it should only be active for one clock cycle
 
-    if sw_enable_debug_mode = '1' then      
+    if sw_enable_debug_mode = '1' then
       if sw_select_axis = '1' then -- X-Axis is selected
         adc_value_x_next <= set_adc_value(adc_value_x, ADC_INCREMENT, ADC_INCREMENT_MULTIPLIER, sw_select_increment_amount, btn_increase, btn_decrease);
         adc_valid_strobe_next <= '1';
