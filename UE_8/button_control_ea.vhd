@@ -37,10 +37,12 @@ architecture rtl of button_control is
   constant ADC_MAX_VALUE : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(ADC_VALUE_RANGE, ADC_BIT_WIDTH);
   constant ADC_MIN_VALUE : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(0, ADC_BIT_WIDTH);
   
+  constant ADC_VALUE_DEFAULT : natural := ADC_VALUE_RANGE / 2; -- 90°
+
   signal sw_enable_debug_mode, sw_select_axis, sw_select_increment_amount : std_ulogic;
   signal btn_increase, btn_decrease : std_ulogic;
 
-  signal adc_value_x, adc_value_y, adc_value_x_next, adc_value_y_next : unsigned(ADC_BIT_WIDTH - 1 downto 0);
+  signal adc_value_x, adc_value_y, adc_value_x_next, adc_value_y_next : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(ADC_VALUE_DEFAULT, ADC_BIT_WIDTH);
   signal adc_valid_strobe, adc_valid_strobe_next : std_ulogic;
 
   impure function set_adc_value(

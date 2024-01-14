@@ -55,15 +55,15 @@ add wave -noupdate -color Cyan -radix binary /tilt_debug_tb/debug_led
 
 # Label
 add wave -divider {ADC-Values and Valid Strobes}
-add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_debug_tb/tilt_debug/adc_valid_strobe
+add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_debug_tb/tilt_debug/adc_valid_strobe
 add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_debug_tb/tilt_debug/hold_adc_value
 
 # Label
 add wave -divider {button_control}
-add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_debug_tb/tilt_debug/button_control/adc_value_x
-add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_debug_tb/tilt_debug/button_control/adc_value_x_next
-add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_debug_tb/tilt_debug/button_control/adc_value_y
-add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_debug_tb/tilt_debug/button_control/adc_value_y_next
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_debug_tb/tilt_debug/button_control/adc_value_x
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_debug_tb/tilt_debug/button_control/adc_value_x_next
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_debug_tb/tilt_debug/button_control/adc_value_y
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_debug_tb/tilt_debug/button_control/adc_value_y_next
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_debug_tb/tilt_debug/button_control/btn_increase
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_debug_tb/tilt_debug/button_control/btn_decrease
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_debug_tb/tilt_debug/button_control/adc_valid_strobe
