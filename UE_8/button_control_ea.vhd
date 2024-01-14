@@ -10,7 +10,6 @@ use work.tilt_package.all;
 -- 1.1. Select Axis for Debug Mode
 -- 1.2. Select increment amount for pressing Buttons in Debug Mode
 -- 1.3. Increase / Decrease current ADC-Value
--- 2. Enable / Disable Moving Average Filter
 
 entity button_control is
   generic (
@@ -19,7 +18,7 @@ entity button_control is
   port (
     -- Inputs:
     -- Switches
-    signal sw_enable_filter_i, sw_enable_debug_mode_i, sw_select_axis_i, sw_select_increment_amount_i : in std_ulogic;
+    signal sw_enable_debug_mode_i, sw_select_axis_i, sw_select_increment_amount_i : in std_ulogic;
     -- Buttons
     signal btn_increase_i, btn_decrease_i : in std_ulogic; -- Reset Button is handled in top-level-entity
     -- Board Signals
@@ -28,7 +27,6 @@ entity button_control is
     signal debug_led_o : out std_ulogic; -- Led to show that debug mode is enabled!
     signal adc_value_x_o, adc_value_y_o : out unsigned(ADC_BIT_WIDTH - 1 downto 0);
     signal adc_valid_strobe_o : out std_ulogic;
-    signal enable_filter_o : out std_ulogic
   );
 end entity button_control;
 
@@ -40,10 +38,11 @@ architecture rtl of button_control is
   constant ADC_MAX_VALUE : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(ADC_VALUE_RANGE, ADC_BIT_WIDTH);
   constant ADC_MIN_VALUE : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(0, ADC_BIT_WIDTH);
   
-  signal sw_enable_filter, sw_enable_debug_mode, sw_select_axis, sw_select_increment_amount : std_ulogic;
+  signal sw_enable_debug_mode, sw_select_axis, sw_select_increment_amount : std_ulogic;
   signal btn_increase, btn_decrease : std_ulogic;
 
-  signal adc_value_x, adc_value_y : unsigned(ADC_BIT_WIDTH - 1 downto 0);
+  signal adc_value_x, adc_value_y, adc_value_x_next, adc_value_y_next : unsigned(ADC_BIT_WIDTH - 1 downto 0);
+  signal adc_valid_strobe, adc_valid_strobe_next : std_ulogic;
 
   impure function set_adc_value(
     total_value, increment_value, factor: unsigned(ADC_BIT_WIDTH - 1 downto 0);
@@ -76,7 +75,7 @@ begin
   debug_led_o <= sw_enable_debug_mode;
   adc_value_x_o <= adc_value_x;
   adc_value_y_o <= adc_value_y;
-  enable_filter_o <= sw_enable_filter;
+  adc_valid_strobe_o <= adc_valid_strobe;
 
   clk: process(clk_i, reset_i)
   begin
@@ -84,40 +83,32 @@ begin
       -- TODO: Maybe change this later to an angle where the ball can be balanced better! Initialize with values corresponding to 0 degress = 150
       adc_value_x <= to_unsigned(175, ADC_BIT_WIDTH); -- 90°
       adc_value_y <= to_unsigned(175, ADC_BIT_WIDTH); -- 90°
+    elsif rising_edge(clk_i) then
+      adc_value_x <= adc_value_x_next;
+      adc_value_y <= adc_value_y_next;
+      adc_valid_strobe <= adc_valid_strobe_next;
     end if;
   end process clk;
 
   -- Note: a Process was chosen for processing increases/decreases in adc_values since the code is more well arranged!
   btn_actions: process(sw_select_axis, sw_enable_debug_mode, sw_select_increment_amount, btn_increase, btn_decrease)
   begin
+    adc_value_x_next <= adc_value_x;
+    adc_value_x_next <= adc_value_x;
+    adc_valid_strobe_next <= '0'; -- Is set to zero because it should only be active for one clock cycle
+
     if sw_enable_debug_mode = '1' then      
       if sw_select_axis = '1' then -- X-Axis is selected
-        adc_value_x <= set_adc_value(adc_value_x, ADC_INCREMENT, ADC_INCREMENT_MULTIPLIER, sw_select_increment_amount, btn_increase, btn_decrease);
+        adc_value_x_next <= set_adc_value(adc_value_x, ADC_INCREMENT, ADC_INCREMENT_MULTIPLIER, sw_select_increment_amount, btn_increase, btn_decrease);
+        adc_valid_strobe_next <= '1';
       else -- Y-Axis is selected
-        adc_value_y <= set_adc_value(adc_value_y, ADC_INCREMENT, ADC_INCREMENT_MULTIPLIER, sw_select_increment_amount, btn_increase, btn_decrease);
+        adc_value_y_next <= set_adc_value(adc_value_y, ADC_INCREMENT, ADC_INCREMENT_MULTIPLIER, sw_select_increment_amount, btn_increase, btn_decrease);
+        adc_valid_strobe_next <= '1';
       end if;
     end if;
   end process btn_actions;
 
-  strobe_generator: entity work.strobe_generator(rtl) generic map (
-    STROBE_PERIOD => CLOCK_FREQ / DELTA_ADC_SAMPLING_FREQ
-  ) port map (
-    clk_i => clk_i,
-    reset_i => reset_i,
-    strobe_o => adc_valid_strobe_o
-  );
-
   -- Synchronize Input Switches
-  debounce_sw_enable_filter: entity work.debounce(rtl) generic map (
-    CLK_FREQUENCY_HZ => CLOCK_FREQ,
-    DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
-  ) port map (
-    clk_i => clk_i,
-    reset_i => reset_i,
-    button_i => sw_enable_filter_i,
-    debounce_o => sw_enable_filter 
-  );
-
   debounce_sw_enable_debug_mode: entity work.debounce(rtl) generic map (
     CLK_FREQUENCY_HZ => CLOCK_FREQ,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
