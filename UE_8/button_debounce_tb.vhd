@@ -3,8 +3,6 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 use IEEE.math_real.all;
 -- Internal Package
-use work.servo_package.all;
-use work.tilt_package.all;
 
 entity button_debounce_tb is
 end entity button_debounce_tb;
@@ -21,8 +19,8 @@ architecture testbench of button_debounce_tb is
   constant DEBOUNCE_TIME_MS : natural := 20;
   constant PWM_PERIOD_MS : positive := 1;
 
-  constant PWM_PERIOD_COUNT : natural := (1 / 1000) / (1 / CLK_FREQUENCY);
-  constant PWM_BIT_WIDTH : natural := integer( ceil(log2(real( PWM_PERIOD_COUNT ))) ); 
+  constant PWM_PERIOD_COUNT : natural := CLK_FREQUENCY / 10000; -- pwm Signal with one 100 us period
+  constant PWM_BIT_WIDTH : natural := integer( ceil(log2( real(PWM_PERIOD_COUNT) )) ); 
 
   signal pwm_on, pwm_period : unsigned(PWM_BIT_WIDTH - 1 downto 0);
 begin
@@ -30,29 +28,85 @@ begin
   pwm_period <= to_unsigned(PWM_PERIOD_COUNT, PWM_BIT_WIDTH);
 
   PWM: entity work.pwm(rtl) generic map (
-    PWM_BIT_WIDTH => COUNTER_LEN
+    COUNTER_LEN => PWM_BIT_WIDTH
   ) port map (
-    clk => clk_i,
-    reset => reset_i,
-    pwm_period => Period_counter_val_i,
-    pwm_on => ON_counter_val_i,
-    button_input => PWM_pin_o
+    clk_i => clk,
+    reset_i => reset ,
+    Period_counter_val_i => pwm_period,
+    ON_counter_val_i => pwm_on,
+    PWM_pin_o => button_input 
   );
 
-  button_debounce: entity work.pwm(rtl) generic map (
+  button_debounce: entity work.button_debounce(rtl) generic map (
     CLK_FREQUENCY_HZ => CLK_FREQUENCY,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
   ) port map (
-    clk => clk_i,
-    reset => reset_i,
-    button_input => button_i,
-    debounce_output => debounce_o
+    clk_i => clk,
+    reset_i => reset,
+    button_i => button_input,
+    debounce_o => debounce_output 
   );
 
   clk <= not clk after CLK_PERIOD / 2;
   
   Stimuli: process is
   begin
+
+    -- Pulse with Chatter in front:
+
+    pwm_on <= to_unsigned(0, PWM_BIT_WIDTH);
+
+    wait for 500 us;
+
+    pwm_on <= to_unsigned((CLK_FREQUENCY / 10000)/2, PWM_BIT_WIDTH); -- 50 us
+
+    wait for 500 us;
+
+    pwm_on <= to_unsigned(PWM_PERIOD_COUNT, PWM_BIT_WIDTH);
+
+    wait for 1 ms;
+
+    pwm_on <= to_unsigned(0, PWM_BIT_WIDTH);
+
+    wait for 22 ms;
+
+    -- Pulse with chatter on press and release of button that shows
+    -- that after the button is unpressed for the next 20 ms the
+    -- new button presses have no effect.
+
+    pwm_on <= to_unsigned((CLK_FREQUENCY / 10000)/2, PWM_BIT_WIDTH); -- 50 us
+
+    wait for 1 ms;
+
+    pwm_on <= to_unsigned(PWM_PERIOD_COUNT, PWM_BIT_WIDTH);
+
+    wait for 1 ms;
+
+    pwm_on <= to_unsigned((CLK_FREQUENCY / 10000)/2, PWM_BIT_WIDTH); -- 50 us
+
+    wait for 1 ms;
+
+    pwm_on <= to_unsigned(0, PWM_BIT_WIDTH);
+
+    wait for 22 ms;
+
+    -- Pulse with chatter on press and release of button
+
+    pwm_on <= to_unsigned((CLK_FREQUENCY / 10000)/2, PWM_BIT_WIDTH); -- 50 us
+
+    wait for 2 ms;
+
+    pwm_on <= to_unsigned(PWM_PERIOD_COUNT, PWM_BIT_WIDTH);
+
+    wait for 30 ms;
+
+    pwm_on <= to_unsigned((CLK_FREQUENCY / 10000)/2, PWM_BIT_WIDTH); -- 50 us
+
+    wait for 2 ms;
+
+    pwm_on <= to_unsigned(0, PWM_BIT_WIDTH);
+
+    wait for 22 ms;
 
   wait;
 

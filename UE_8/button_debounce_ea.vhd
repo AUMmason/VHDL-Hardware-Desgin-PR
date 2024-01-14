@@ -3,10 +3,21 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 use IEEE.math_real.all;
 
+-- Usage:
+--  Can be used for debouncing buttons and switches.
+-- Example: 
+--  BUTTON IS PRESSED: 
+--  button_i = '1', bounces for 5 ms (example time). 
+--  At the first rising_edge of button_i, debounce_o = '1' for DEBOUNCE_TIME_MS.
+--  BUTTON IS RELEASED: 
+--  button_i = '0', bounces for 4 ms (example time)
+--  The release of the button is detected and debounce_o holds '0' for at least DEBOUNCE_TIME_MS 
+--  until further user input.
+
 entity button_debounce is
   generic (
     CLK_FREQUENCY_HZ : positive;
-    DEBOUNCE_TIME_MS : positive
+    DEBOUNCE_TIME_MS : positive -- sets the time debounce_o has to hold the initial input signal.
   );
   port (
     signal button_i, clk_i, reset_i : in std_ulogic;
@@ -15,16 +26,14 @@ entity button_debounce is
 end entity button_debounce;
 
 architecture rtl of button_debounce is
-  constant COUNTER_MAX : natural := (DEBOUNCE_TIME_MS / 1000) / (1 / CLK_FREQUENCY_HZ); 
-
+  constant COUNTER_MAX : natural := DEBOUNCE_TIME_MS * (CLK_FREQUENCY_HZ / 1000); 
   constant BIT_WIDTH : natural := integer( ceil(log2(real( COUNTER_MAX ))) );
   constant COUNTER_MAX_VALUE : unsigned(BIT_WIDTH - 1 downto 0) := to_unsigned(COUNTER_MAX, BIT_WIDTH);
-  signal counter_value : unsigned(BIT_WIDTH - 1 downto 0);
-  signal reset_counter : std_ulogic;
-  
   
   type FSM_STATE is (START, PRESSED, UNPRESSED);
   signal state, state_next : FSM_STATE;
+  signal counter_value : unsigned(BIT_WIDTH - 1 downto 0);
+  signal reset_counter : std_ulogic;
 begin
   
   clk: process(clk_i, reset_i)
@@ -60,12 +69,12 @@ begin
         reset_counter <= '0';
         debounce_o <= '1';
         if counter_value >= COUNTER_MAX_VALUE then
-          if falling_edge(button_i) then
+          if button_i = '0' then
             state_next <= UNPRESSED;
             reset_counter <= '1';
           end if;
         end if;
-      when UNPRESSED => 
+      when UNPRESSED =>
         reset_counter <= '0';
         debounce_o <= '0';
         if counter_value >= COUNTER_MAX_VALUE then
