@@ -7,7 +7,7 @@ use work.tilt_package.all;
 -- This entity is used to replicate the functionality of the delta_adc used in this projcet
 -- But insead of following a comparator signal, the pwm output is set by a given adc_value
 
-entity delta_adc is
+entity delta_adc_debug is
   generic (
     ADC_BIT_WIDTH : natural
   );
@@ -16,9 +16,9 @@ entity delta_adc is
     signal adc_value_i : in unsigned(ADC_BIT_WIDTH - 1 downto 0);
     signal PWM_o : out std_ulogic
   );
-end entity delta_adc;
+end entity delta_adc_debug;
 
-architecture rtl of delta_adc is
+architecture rtl of delta_adc_debug is
   constant ADC_MAX_VALUE: unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(ADC_VALUE_RANGE, ADC_BIT_WIDTH);
 begin
 
