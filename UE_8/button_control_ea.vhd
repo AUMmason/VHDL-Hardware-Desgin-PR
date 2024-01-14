@@ -26,7 +26,7 @@ entity button_control is
     -- Outputs:
     signal debug_led_o : out std_ulogic; -- Led to show that debug mode is enabled!
     signal adc_value_x_o, adc_value_y_o : out unsigned(ADC_BIT_WIDTH - 1 downto 0);
-    signal adc_valid_strobe_o : out std_ulogic;
+    signal adc_valid_strobe_o : out std_ulogic
   );
 end entity button_control;
 
