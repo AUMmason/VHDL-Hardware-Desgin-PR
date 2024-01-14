@@ -1,0 +1,120 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+use IEEE.math_real.all;
+-- Internal Packages
+use work.servo_package.all;
+use work.tilt_package.all;
+
+entity tilt_debug is
+  port (
+    -- Inputs
+    -- From Button Control
+    signal sw_enable_debug_mode_i, sw_select_axis_i, sw_select_increment_amount_i : in std_ulogic;
+    signal btn_increase_i, btn_decrease_i : in std_ulogic;
+    -- Internal
+    signal clk_i, reset_i : in std_ulogic;
+    -- Outputs
+    signal axis_pwm_pin_o : out std_ulogic;
+    signal axis_servo_pwm_pin_o : out std_ulogic;
+    -- 3x Outputs for each 7seg Display (for on Axis) (6 in Total)
+    signal LED_X00_o, LED_0X0_o, LED_00X_o : out std_ulogic_vector(0 to 6);
+    signal debug_led_o : out std_ulogic
+  );
+end entity tilt_debug;
+
+architecture rtl of tilt_debug is
+  constant ADC_BIT_WIDTH : natural := integer( ceil(log2(real( ADC_VALUE_RANGE ))) ); -- 250
+  constant SERVO_PWM_BIT_WIDTH : natural := integer( ceil(log2(real( SERVO_SIGNAL_MAX ))) );
+  constant BIN2BCD_BIT_WIDTH : natural := 16;
+  constant SEVEN_SEG_BIT_WIDTH : natural := 4;
+
+  signal ones, tens, hundreds : std_ulogic_vector(SEVEN_SEG_BIT_WIDTH - 1 downto 0);
+  
+  signal adc_valid_strobe : std_ulogic;
+  signal adc_value, hold_adc_value : unsigned(ADC_BIT_WIDTH - 1 downto 0);
+
+  signal pwm_servo_on_counter_val : unsigned(SERVO_PWM_BIT_WIDTH - 1 downto 0);
+  -- For 7 Segment Display
+  signal binary : std_ulogic_vector(BIN2BCD_BIT_WIDTH - 1 downto 0);
+begin
+  
+  button_control : entity work.button_control(rtl) generic map (
+    ADC_BIT_WIDTH => ADC_BIT_WIDTH
+  ) port map (
+    clk_i => clk_i,
+    reset_i => reset_i,
+    sw_enable_debug_mode_i => sw_enable_debug_mode_i,
+    sw_select_axis_i => sw_select_axis_i,
+    sw_select_increment_amount_i => sw_select_increment_amount_i,
+    btn_increase_i => btn_increase_i,
+    btn_decrease_i => btn_decrease_i,
+    debug_led_o => debug_led_o,
+    adc_value_x_o => adc_value,
+    adc_value_y_o => open,
+    adc_valid_strobe_o => adc_valid_strobe
+  );
+
+  delta_adc_debug : entity work.delta_adc_debug(rtl) generic map (
+    ADC_BIT_WIDTH => ADC_BIT_WIDTH
+  ) port map (
+    clk_i => clk_i,
+    reset_i => reset_i,
+    adc_value_i => adc_value,
+    PWM_o => axis_pwm_pin_o
+  );
+
+  HoldValueOnStrobe : entity work.hold_value_on_strobe(rtl) generic map (
+    BIT_WIDTH => ADC_BIT_WIDTH
+  ) port map (
+    strobe_i => adc_valid_strobe,
+    clk_i => clk_i,
+    reset_i => reset_i,
+    value_i => adc_value,
+    hold_value_o => hold_adc_value
+  );
+
+  binary <= (BIN2BCD_BIT_WIDTH - 1 downto ADC_BIT_WIDTH => '0') & std_ulogic_vector(hold_adc_value);
+
+  Bin2Bcd : entity work.bin2bcd(rtl) port map (
+    binary_i => binary,
+    ones_o => ones,
+    tens_o => tens,
+    hundreds_o => hundreds
+  );
+
+  BcdTo7Seg_Ones : entity work.bcd_to_7seg(rtl) port map (
+    bcd_i => ones,
+    LED_o => LED_00X_o
+  );
+
+  BcdTo7Seg_Tens : entity work.bcd_to_7seg(rtl) port map (
+    bcd_i => tens,
+    LED_o => LED_0X0_o
+  );
+
+  BcdTo7Seg_Hundreds : entity work.bcd_to_7seg(rtl) port map (
+    bcd_i => hundreds,
+    LED_o => LED_X00_o
+  );
+
+  TiltAxis : entity work.tilt(rtl) generic map (
+    ADC_BIT_WIDTH => ADC_BIT_WIDTH,
+    SERVO_BIT_WIDTH => SERVO_PWM_BIT_WIDTH
+  ) port map (
+    clk_i => clk_i,
+    reset_i => reset_i,
+    adc_value_i => hold_adc_value,
+    pwm_on_o => pwm_servo_on_counter_val
+  );
+
+  PWMServo : entity work.servo_controller generic map (
+    INPUT_BIT_WIDTH => SERVO_PWM_BIT_WIDTH
+  ) port map (
+    clk_i => clk_i,
+    reset_i => reset_i,
+    pwm_on_value_i => pwm_servo_on_counter_val,
+    servo_o => axis_servo_pwm_pin_o
+  );
+
+end architecture rtl;
