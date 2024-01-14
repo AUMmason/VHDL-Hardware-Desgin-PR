@@ -14,7 +14,7 @@ use IEEE.math_real.all;
 --  The release of the button is detected and debounce_o holds '0' for at least DEBOUNCE_TIME_MS 
 --  until further user input.
 
-entity button_debounce is
+entity debounce is
   generic (
     CLK_FREQUENCY_HZ : positive;
     DEBOUNCE_TIME_MS : positive -- sets the time debounce_o has to hold the initial input signal.
@@ -23,9 +23,9 @@ entity button_debounce is
     signal button_i, clk_i, reset_i : in std_ulogic;
     signal debounce_o : out std_ulogic
   );
-end entity button_debounce;
+end entity debounce;
 
-architecture rtl of button_debounce is
+architecture rtl of debounce is
   constant COUNTER_MAX : natural := DEBOUNCE_TIME_MS * (CLK_FREQUENCY_HZ / 1000); 
   constant BIT_WIDTH : natural := integer( ceil(log2(real( COUNTER_MAX ))) );
   constant COUNTER_MAX_VALUE : unsigned(BIT_WIDTH - 1 downto 0) := to_unsigned(COUNTER_MAX, BIT_WIDTH);

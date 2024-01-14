@@ -4,10 +4,10 @@ use IEEE.numeric_std.all;
 use IEEE.math_real.all;
 -- Internal Package
 
-entity button_debounce_tb is
-end entity button_debounce_tb;
+entity debounce_tb is
+end entity debounce_tb;
 
-architecture testbench of button_debounce_tb is
+architecture testbench of debounce_tb is
 
   constant CLK_FREQUENCY : integer := 50e6; -- 50 MHz
   constant CLK_PERIOD : time := 1000 ms / CLK_FREQUENCY; -- T = 1/f
@@ -37,7 +37,7 @@ begin
     PWM_pin_o => button_input 
   );
 
-  button_debounce: entity work.button_debounce(rtl) generic map (
+  debounce: entity work.debounce(rtl) generic map (
     CLK_FREQUENCY_HZ => CLK_FREQUENCY,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
   ) port map (
