@@ -2,7 +2,6 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 -- Internal Packages
-use work.servo_package.all;
 use work.tilt_package.all;
 
 -- Central module for performing actions in debug mode and to turn on/off certain modules:
@@ -81,8 +80,8 @@ begin
   begin
     if reset_i = '1' then
       -- TODO: Maybe change this later to an angle where the ball can be balanced better! Initialize with values corresponding to 0 degress = 150
-      adc_value_x <= to_unsigned(175, ADC_BIT_WIDTH); -- 90°
-      adc_value_y <= to_unsigned(175, ADC_BIT_WIDTH); -- 90°
+      adc_value_x <= to_unsigned(125, ADC_BIT_WIDTH); -- 90°
+      adc_value_y <= to_unsigned(125, ADC_BIT_WIDTH); -- 90°
     elsif rising_edge(clk_i) then
       adc_value_x <= adc_value_x_next;
       adc_value_y <= adc_value_y_next;
