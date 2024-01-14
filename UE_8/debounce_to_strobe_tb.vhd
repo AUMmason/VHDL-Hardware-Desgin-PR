@@ -3,17 +3,20 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 use IEEE.math_real.all;
 
-entity debounce_tb is
-end entity debounce_tb;
+-- Note: Nearly identical (but with reduced clock speed) to debounce_tb.vhd
+-- only for testing functionality of: debounce_to_strobe!
 
-architecture testbench of debounce_tb is
+entity debounce_to_strobe_tb is
+end entity debounce_to_strobe_tb;
 
-  constant CLK_FREQUENCY : integer := 50e6; -- 50 MHz
+architecture testbench of debounce_to_strobe_tb is
+
+  constant CLK_FREQUENCY : integer := 50e3; -- 50 kHz
   constant CLK_PERIOD : time := 1000 ms / CLK_FREQUENCY; -- T = 1/f
   
   signal reset : std_ulogic := '0';
   signal clk : std_ulogic := '0';
-  signal button_input, debounce_output : std_ulogic;
+  signal button_input, strobe : std_ulogic;
 
   constant DEBOUNCE_TIME_MS : natural := 20;
   constant PWM_PERIOD_MS : positive := 1;
@@ -36,22 +39,20 @@ begin
     PWM_pin_o => button_input 
   );
 
-  debounce: entity work.debounce(rtl) generic map (
+  debounce_to_strobe: entity work.debounce_to_strobe(rtl) generic map (
     CLK_FREQUENCY_HZ => CLK_FREQUENCY,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
   ) port map (
     clk_i => clk,
     reset_i => reset,
     button_i => button_input,
-    debounce_o => debounce_output 
+    strobe_o => strobe 
   );
 
   clk <= not clk after CLK_PERIOD / 2;
   
   Stimuli: process is
   begin
-
-    -- Pulse with Chatter in front:
 
     pwm_on <= to_unsigned(0, PWM_BIT_WIDTH);
 
