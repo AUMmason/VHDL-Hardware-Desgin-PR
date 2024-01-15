@@ -6,7 +6,7 @@ entity adder_tb is
 end entity adder_tb;
 
 architecture testbench of adder_tb is
-  constant BIT_WIDTH: integer := 2;
+  constant BIT_WIDTH: integer := 4;
   signal operand_a_i, operand_b_i: std_ulogic_vector(BIT_WIDTH - 1 downto 0);
   signal result_o: std_ulogic_vector(BIT_WIDTH downto 0);
   

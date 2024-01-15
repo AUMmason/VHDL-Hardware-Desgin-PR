@@ -12,7 +12,7 @@ use work.tilt_package.all;
 
 entity button_control is
   generic (
-    ADC_BIT_WIDTH : natural,
+    ADC_BIT_WIDTH : natural;
     DEBOUNCE_TIME_MS : natural
   );
   port (
