@@ -46,11 +46,10 @@ architecture rtl of tilt_board_debug is
 
   -- Transfer Signals
   signal axis_pwm_pin, debug_axis_pwm_pin : std_ulogic;
-  signal debug_adc_value : unsigned(ADC_BIT_WIDTH - 1 downto 0);
 begin
   
   -- * Debug Signal Assignments
-  adc_value <= debug_adc_value when debug_mode_enabled_i = '1' else adc_value_filtered;
+  adc_value <= debug_adc_value_i when debug_mode_enabled_i = '1' else adc_value_filtered;
   axis_pwm_pin_o <= debug_axis_pwm_pin when debug_mode_enabled_i = '1' else axis_pwm_pin;
   adc_valid_strobe <= debug_adc_valid_strobe_i when debug_mode_enabled_i = '1' else adc_filterd_valid_strobe;
 
@@ -101,10 +100,10 @@ begin
   HoldValueOnStrobe : entity work.hold_value_on_strobe(rtl) generic map (
     BIT_WIDTH => ADC_BIT_WIDTH
   ) port map (
-    strobe_i => adc_valid_strobe,
+    strobe_i => adc_valid_strobe, -- For initiation a strobe is needed otherwise the held adc value will be X
     clk_i => clk_i,
     reset_i => reset_i,
-    value_i => adc_value,
+    value_i => adc_value, 
     hold_value_o => hold_adc_value
   );
 

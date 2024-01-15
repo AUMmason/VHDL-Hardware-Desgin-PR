@@ -40,7 +40,9 @@ begin
 
   button_control : entity work.button_control(rtl) generic map (
     ADC_BIT_WIDTH => ADC_BIT_WIDTH,
-    DEBOUNCE_TIME_MS => 20
+    DEBOUNCE_TIME_MS => 20,
+    CLOCK_FREQUENCY_HZ => CLK_FREQUENCY,
+    DEFAULT_DEBUG_ADC_VALUE => ADC_VALUE_RANGE / 2 -- 125
   ) port map (
     clk_i => clk,
     reset_i => reset,
@@ -86,29 +88,23 @@ begin
   begin
     reset <= '1';
     sw_select_increment_amount <= '0';
+    sw_select_axis <= '1';
+    sw_enable_debug_mode <= '0';
+    
+    wait for 500 us;
+    
     sw_enable_debug_mode <= '1';
-
-    wait for 50 us;
-
     reset <= '0';
-
-    wait for 200 us;
-
-    btn_increase_control <= '1';
-
-    wait for 250 us;
-
-    btn_increase_control <= '0';
 
     wait for 500 us;
 
+    btn_increase_control <= '1';
+
+    wait for 100 ms;
+
     sw_select_increment_amount <= '1';
 
-    wait for 41 ms;
-
-    btn_increase_control <= '1'; -- Used to trigger an increase more times
-
-    wait for 300 ms; 
+    wait for 250 ms; 
     
     sw_enable_debug_mode <= '0'; -- Disable Debug Mode!
 
@@ -116,29 +112,23 @@ begin
 
     sw_enable_debug_mode <= '1';
 
-    wait for 100 ms;
+    wait for 300 ms;
 
-    btn_increase_control <= '0';
+    btn_increase_control <= '0'; -- Stop Increase
 
     wait for 50 ms;
 
-    sw_select_increment_amount <= '0';
+    sw_select_increment_amount <= '0'; -- Reset Multiplier to 1
     btn_decrease_control <= '1';
-
-    wait for 500 us;
     
-    btn_decrease_control <= '0';
-    
-    wait for 42 ms;
+    wait for 100 ms;
     
     sw_select_increment_amount <= '1';
     btn_decrease_control <= '1';
     
-    wait for 1015 ms;
+    wait for 1100 ms;
 
     btn_decrease_control <= '0';
-
-    wait for 5 ms;
 
     wait;
   end process;

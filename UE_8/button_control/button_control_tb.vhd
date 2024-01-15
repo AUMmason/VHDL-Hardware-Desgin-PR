@@ -6,12 +6,12 @@ use IEEE.math_real.all;
 use work.servo_package.all;
 use work.tilt_package.all;
 
-entity tilt_board_debug_tb is
-end entity tilt_board_debug_tb;
+entity button_control_tb is
+end entity button_control_tb;
 
-architecture testbench of tilt_board_debug_tb is
+architecture testbench of button_control_tb is
   constant ADC_BIT_WIDTH : natural := integer( ceil(log2(real( ADC_VALUE_RANGE ))) );
-  constant CLK_FREQUENCY : integer := 50e6; -- 50 MHz
+  constant CLK_FREQUENCY : integer := 50e3; -- 50 kHz
   constant CLK_PERIOD : time := 1000 ms / CLK_FREQUENCY; -- T = 1/f
 
   signal clk, reset : std_ulogic := '0';
@@ -26,17 +26,15 @@ architecture testbench of tilt_board_debug_tb is
   signal enable_debug_mode, debug_adc_valid_strobe : std_ulogic;
   signal debug_adc_value_x, debug_adc_value_y : unsigned(ADC_BIT_WIDTH - 1 downto 0);
 
-  -- Other board settings
-
-  signal LED_X00, LED_0X0, LED_00X : std_ulogic_vector(0 to 6);
-  
   -- Signal used to control btn_increase / btn_decrease
   signal btn_increase_control, btn_decrease_control : std_ulogic := '0';
 begin
 
   button_control : entity work.button_control(rtl) generic map (
     ADC_BIT_WIDTH => ADC_BIT_WIDTH,
-    DEBOUNCE_TIME_MS => 20
+    DEBOUNCE_TIME_MS => 20,
+    CLOCK_FREQUENCY_HZ => CLK_FREQUENCY,
+    DEFAULT_DEBUG_ADC_VALUE => ADC_VALUE_RANGE / 2 -- 125
   ) port map (
     clk_i => clk,
     reset_i => reset,
@@ -62,30 +60,23 @@ begin
   begin
     reset <= '1';
     sw_select_increment_amount <= '0';
-    sw_enable_debug_mode <= '1';
     sw_select_axis <= '1';
+    sw_enable_debug_mode <= '0';
     
-    wait for 50 us;
-
+    wait for 500 us;
+    
+    sw_enable_debug_mode <= '1';
     reset <= '0';
-
-    wait for 200 us;
-
-    btn_increase_control <= '1';
-
-    wait for 250 us;
-
-    btn_increase_control <= '0';
 
     wait for 500 us;
 
+    btn_increase_control <= '1';
+
+    wait for 100 ms;
+
     sw_select_increment_amount <= '1';
 
-    wait for 41 ms;
-
-    btn_increase_control <= '1'; -- Used to trigger an increase more times
-
-    wait for 300 ms; 
+    wait for 250 ms; 
     
     sw_enable_debug_mode <= '0'; -- Disable Debug Mode!
 
@@ -93,30 +84,69 @@ begin
 
     sw_enable_debug_mode <= '1';
 
-    wait for 100 ms;
+    wait for 300 ms;
 
-    btn_increase_control <= '0';
+    btn_increase_control <= '0'; -- Stop Increase
 
     wait for 50 ms;
 
-    sw_select_increment_amount <= '0';
+    sw_select_increment_amount <= '0'; -- Reset Multiplier to 1
     btn_decrease_control <= '1';
-
-    wait for 500 us;
     
-    btn_decrease_control <= '0';
-    
-    wait for 42 ms;
+    wait for 100 ms;
     
     sw_select_increment_amount <= '1';
     btn_decrease_control <= '1';
     
-    wait for 1015 ms;
+    wait for 1100 ms;
 
     btn_decrease_control <= '0';
 
-    wait for 5 ms;
 
+    -- Now Test Y-Axis --
+
+
+    sw_select_axis <= '0';
+
+    sw_enable_debug_mode <= '1';
+    reset <= '0';
+
+    wait for 500 us;
+
+    btn_increase_control <= '1';
+
+    wait for 100 ms;
+
+    sw_select_increment_amount <= '1';
+
+    wait for 250 ms; 
+    
+    sw_enable_debug_mode <= '0'; -- Disable Debug Mode!
+
+    wait for 200 ms;
+
+    sw_enable_debug_mode <= '1';
+
+    wait for 300 ms;
+
+    btn_increase_control <= '0'; -- Stop Increase
+
+    wait for 50 ms;
+
+    sw_select_increment_amount <= '0'; -- Reset Multiplier to 1
+    btn_decrease_control <= '1';
+    
+    wait for 100 ms;
+    
+    sw_select_increment_amount <= '1';
+    btn_decrease_control <= '1';
+    
+    wait for 1100 ms;
+
+    btn_decrease_control <= '0';
+
+
+    
     wait;
   end process;
 

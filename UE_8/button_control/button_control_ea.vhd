@@ -13,7 +13,9 @@ use work.tilt_package.all;
 entity button_control is
   generic (
     ADC_BIT_WIDTH : natural;
-    DEBOUNCE_TIME_MS : natural
+    DEBOUNCE_TIME_MS : natural;
+    CLOCK_FREQUENCY_HZ : natural;
+    DEFAULT_DEBUG_ADC_VALUE : natural -- ? What should the default value be ?
   );
   port (
     -- Inputs:
@@ -36,13 +38,11 @@ architecture rtl of button_control is
   -- The 2 constants below are not in a package because similar names are used in other files
   constant ADC_MAX_VALUE : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(ADC_VALUE_RANGE, ADC_BIT_WIDTH);
   constant ADC_MIN_VALUE : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(0, ADC_BIT_WIDTH);
-  
-  constant ADC_VALUE_DEFAULT : natural := ADC_VALUE_RANGE / 2; -- 90°
 
   signal sw_enable_debug_mode, sw_select_axis, sw_select_increment_amount : std_ulogic;
   signal btn_increase, btn_decrease : std_ulogic;
 
-  signal adc_value_x, adc_value_y, adc_value_x_next, adc_value_y_next : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(ADC_VALUE_DEFAULT, ADC_BIT_WIDTH);
+  signal adc_value_x, adc_value_y, adc_value_x_next, adc_value_y_next : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(DEFAULT_DEBUG_ADC_VALUE, ADC_BIT_WIDTH);
   signal adc_valid_strobe, adc_valid_strobe_next : std_ulogic;
 
   impure function set_adc_value(
@@ -57,13 +57,13 @@ architecture rtl of button_control is
     end if;
     -- Assuming that only one button will be pressed at a time!
     if increase = '1' then
-      if total + value <= ADC_MAX_VALUE then
+      if total <= ADC_MAX_VALUE - value then -- Example: 242 + 10 = 252 ! -> 250 - 10 = 240 <= 242
         total := total + value;
       else 
         total := ADC_MAX_VALUE;
       end if;
     elsif decrease = '1' then
-      if total - value >= ADC_MIN_VALUE then
+      if total >= ADC_MIN_VALUE + value then
         total := total - value;
       else 
         total := ADC_MIN_VALUE;
@@ -72,7 +72,9 @@ architecture rtl of button_control is
 
     return total;
   end function;
-begin
+
+begin -- Architecture
+
   enable_debug_mode_o <= sw_enable_debug_mode;
   adc_value_x_o <= adc_value_x;
   adc_value_y_o <= adc_value_y;
@@ -81,9 +83,9 @@ begin
   clk: process(clk_i, reset_i)
   begin
     if reset_i = '1' then
-      -- TODO: Maybe change this later to an angle where the ball can be balanced better! Initialize with values corresponding to 0 degress = 150
-      adc_value_x <= to_unsigned(125, ADC_BIT_WIDTH); -- 90°
-      adc_value_y <= to_unsigned(125, ADC_BIT_WIDTH); -- 90°
+      adc_value_x <= to_unsigned(DEFAULT_DEBUG_ADC_VALUE, ADC_BIT_WIDTH); 
+      adc_value_y <= to_unsigned(DEFAULT_DEBUG_ADC_VALUE, ADC_BIT_WIDTH);
+      adc_valid_strobe <= '0';
     elsif rising_edge(clk_i) then
       adc_value_x <= adc_value_x_next;
       adc_value_y <= adc_value_y_next;
@@ -92,26 +94,33 @@ begin
   end process clk;
 
   -- Note: a Process was chosen for processing increases/decreases in adc_values since the code is more well arranged!
-  btn_actions: process(sw_select_axis, sw_enable_debug_mode, sw_select_increment_amount, btn_increase, btn_decrease)
+  btn_actions: process(adc_value_x, adc_value_y, btn_increase, btn_decrease, sw_select_axis, sw_enable_debug_mode, sw_select_increment_amount)
   begin
     adc_value_x_next <= adc_value_x;
     adc_value_y_next <= adc_value_y;
-    adc_valid_strobe_next <= '0'; -- Is set to zero because it should only be active for one clock cycle
-
+    adc_valid_strobe_next <= adc_valid_strobe;
+    
     if sw_enable_debug_mode = '1' then
+      -- Check for Axis
       if sw_select_axis = '1' then -- X-Axis is selected
         adc_value_x_next <= set_adc_value(adc_value_x, ADC_INCREMENT, ADC_INCREMENT_MULTIPLIER, sw_select_increment_amount, btn_increase, btn_decrease);
-        adc_valid_strobe_next <= '1';
-      else -- Y-Axis is selected
+      else                         -- Y-Axis is selected
         adc_value_y_next <= set_adc_value(adc_value_y, ADC_INCREMENT, ADC_INCREMENT_MULTIPLIER, sw_select_increment_amount, btn_increase, btn_decrease);
-        adc_valid_strobe_next <= '1';
       end if;
+      -- Check if any button is pressed -> send strobe for new value!
+      if btn_increase = '1' or btn_decrease = '1' then
+        adc_valid_strobe_next <= '1';
+      else 
+        adc_valid_strobe_next <= '0';
+      end if;
+    else 
+      adc_valid_strobe_next <= '1'; -- * This is needed so hold_value_on_strobe gets the debug value on debug mode activation 
     end if;
   end process btn_actions;
 
   -- Synchronize Input Switches
   debounce_sw_enable_debug_mode: entity work.debounce(rtl) generic map (
-    CLK_FREQUENCY_HZ => CLOCK_FREQ,
+    CLK_FREQUENCY_HZ => CLOCK_FREQUENCY_HZ,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
   ) port map (
     clk_i => clk_i,
@@ -121,7 +130,7 @@ begin
   );
 
   debounce_sw_select_axis: entity work.debounce(rtl) generic map (
-    CLK_FREQUENCY_HZ => CLOCK_FREQ,
+    CLK_FREQUENCY_HZ => CLOCK_FREQUENCY_HZ,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
   ) port map (
     clk_i => clk_i,
@@ -131,7 +140,7 @@ begin
   );
 
   debounce_sw_select_increment_amount: entity work.debounce(rtl) generic map (
-    CLK_FREQUENCY_HZ => CLOCK_FREQ,
+    CLK_FREQUENCY_HZ => CLOCK_FREQUENCY_HZ,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
   ) port map (
     clk_i => clk_i,
@@ -145,7 +154,7 @@ begin
   -- * They are inverted in the top-level-entity.
   
   debounce_btn_increase: entity work.debounce_to_strobe(rtl) generic map (
-    CLK_FREQUENCY_HZ => CLOCK_FREQ,
+    CLK_FREQUENCY_HZ => CLOCK_FREQUENCY_HZ,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
   ) port map (
     clk_i => clk_i,
@@ -155,7 +164,7 @@ begin
   );
   
   debounce_btn_decrease: entity work.debounce_to_strobe(rtl) generic map (
-    CLK_FREQUENCY_HZ => CLOCK_FREQ,
+    CLK_FREQUENCY_HZ => CLOCK_FREQUENCY_HZ,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
   ) port map (
     clk_i => clk_i,

@@ -20,7 +20,7 @@ vcom VHDL-Hardware-Desgin-PR/UE_6/tilt_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_8/debounce/debounce_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_8/debounce/debounce_to_strobe_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_8/delta_adc_debug_ea.vhd
-vcom VHDL-Hardware-Desgin-PR/UE_8/button_control/button_control.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_8/button_control/button_control_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_8/tilt_board_debug_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_8/tilt_board_debug_tb.vhd
 
@@ -40,7 +40,7 @@ add wave -noupdate -color Cyan -radix symbolic /tilt_board_debug_tb/sw_select_in
 
 add wave -divider {Inputs: Buttons}
 add wave -noupdate -radix symbolic /tilt_board_debug_tb/btn_increase
-add wave -noupdate -color Red -radix symbolic /tilt_board_debug_tb/btn_decrease
+add wave -noupdate -color Coral -radix symbolic /tilt_board_debug_tb/btn_decrease
 
 # Label
 add wave -divider Outputs
@@ -54,8 +54,10 @@ add wave -noupdate -color Cyan -radix binary /tilt_board_debug_tb/LED_00X
 
 # Label
 add wave -divider {ADC-Values and Valid Strobes}
-add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_board_debug_tb/tilt_board_debug/adc_valid_strobe
-add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_debug_tb/tilt_board_debug/hold_adc_value
+add wave -noupdate -radix symbolic /tilt_board_debug_tb/tilt_board_debug/adc_valid_strobe
+add wave -noupdate -radix unsigned /tilt_board_debug_tb/tilt_board_debug/hold_adc_value
+add wave -noupdate -color {Cornflower Blue} -radix unsigned tilt_board_debug_tb/tilt_board_debug/debug_adc_value_i
+add wave -noupdate -color {Cornflower Blue} -radix unsigned tilt_board_debug_tb/tilt_board_debug/adc_value_filtered
 
 # Label
 add wave -divider {button_control}

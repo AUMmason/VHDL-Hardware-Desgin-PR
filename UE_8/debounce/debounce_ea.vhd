@@ -54,14 +54,14 @@ begin
     end if;
   end process clk;
   
-  state_machine: process(button_i, counter_value)
+  state_machine: process(state, button_i, counter_value, reset_counter)
   begin
     state_next <= state;
 
     case state is
       when START =>
         debounce_o <= '0';
-        if rising_edge(button_i) then
+        if button_i = '1' then
           state_next <= PRESSED;
           reset_counter <= '1';
         end if;
