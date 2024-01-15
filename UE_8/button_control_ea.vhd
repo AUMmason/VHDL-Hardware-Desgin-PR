@@ -23,7 +23,7 @@ entity button_control is
     -- Board Signals
     signal clk_i, reset_i : in std_ulogic;
     -- Outputs:
-    signal debug_led_o : out std_ulogic; -- Led to show that debug mode is enabled!
+    signal enable_debug_mode_o : out std_ulogic;
     signal adc_value_x_o, adc_value_y_o : out unsigned(ADC_BIT_WIDTH - 1 downto 0);
     signal adc_valid_strobe_o : out std_ulogic
   );
@@ -73,7 +73,7 @@ architecture rtl of button_control is
     return total;
   end function;
 begin
-  debug_led_o <= sw_enable_debug_mode;
+  enable_debug_mode_o <= sw_enable_debug_mode;
   adc_value_x_o <= adc_value_x;
   adc_value_y_o <= adc_value_y;
   adc_valid_strobe_o <= adc_valid_strobe;
