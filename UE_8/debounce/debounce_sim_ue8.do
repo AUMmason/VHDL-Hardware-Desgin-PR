@@ -3,8 +3,8 @@ quit -sim
 # Files needed for Simulation
 vcom VHDL-Hardware-Desgin-PR/UE_3/pwm_e.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_3/pwm_a.vhd
-vcom VHDL-Hardware-Desgin-PR/UE_8/debounce_ea.vhd
-vcom VHDL-Hardware-Desgin-PR/UE_8/debounce_tb.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_8/debounce/debounce_ea.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_8/debounce/debounce_tb.vhd
 
 # Start Simulation
 vsim -voptargs="\+acc" -t ns debounce_tb

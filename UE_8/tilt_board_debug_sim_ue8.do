@@ -17,9 +17,10 @@ vcom VHDL-Hardware-Desgin-PR/UE_5/servo_controller_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_6/hold_value_on_strobe_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_6/tilt_ea.vhd
 
-vcom VHDL-Hardware-Desgin-PR/UE_8/debounce_ea.vhd
-vcom VHDL-Hardware-Desgin-PR/UE_8/debounce_to_strobe_ea.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_8/debounce/debounce_ea.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_8/debounce/debounce_to_strobe_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_8/delta_adc_debug_ea.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_8/button_control/button_control.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_8/tilt_board_debug_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_8/tilt_board_debug_tb.vhd
 

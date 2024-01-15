@@ -18,7 +18,8 @@ entity debounce_to_strobe is
 end entity debounce_to_strobe;
 
 architecture rtl of debounce_to_strobe is
-  signal deb_input, deb_input_last : std_ulogic;
+  signal deb_input, deb_input_prev : std_ulogic;
+  signal strobe, strobe_next : std_ulogic;
 begin
 
   Debounce: entity work.debounce(rtl) generic map (
@@ -31,13 +32,28 @@ begin
     debounce_o => deb_input
   );
 
+  strobe_o <= strobe;
+
   clk: process(clk_i, reset_i)
   begin
-    if rising_edge(clk_i) then
-      deb_input_last <= deb_input;
+    if reset_i = '1' then
+      strobe <= '0';
+    elsif rising_edge(clk_i) then
+      strobe <= strobe_next;
     end if;
   end process clk;
-  
-  strobe_o <= '1' when (deb_input = '1' and deb_input_last = '0' and reset_i = '0') else '0';
+
+  State: process(deb_input, strobe)
+  begin
+    strobe_next <= strobe;
+    
+    if deb_input = '1' and deb_input_prev = '0' then -- erkennen einer steigenden Flanke
+      strobe_next <= '1';
+    else
+      strobe_next <= '0';
+    end if;
+
+    deb_input_prev <= deb_input;
+  end process State;
 
 end architecture rtl;

@@ -12,7 +12,8 @@ use work.tilt_package.all;
 
 entity button_control is
   generic (
-    ADC_BIT_WIDTH : natural
+    ADC_BIT_WIDTH : natural,
+    DEBOUNCE_TIME_MS : natural
   );
   port (
     -- Inputs:
@@ -30,7 +31,6 @@ entity button_control is
 end entity button_control;
 
 architecture rtl of button_control is
-  constant DEBOUNCE_TIME_MS : natural := 20; -- 20 ms
   constant ADC_INCREMENT : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(1, ADC_BIT_WIDTH);
   constant ADC_INCREMENT_MULTIPLIER : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(10, ADC_BIT_WIDTH);
   -- The 2 constants below are not in a package because similar names are used in other files

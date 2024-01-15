@@ -3,8 +3,8 @@ quit -sim
 # Files needed for Simulation
 vcom VHDL-Hardware-Desgin-PR/UE_3/pwm_e.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_3/pwm_a.vhd
-vcom VHDL-Hardware-Desgin-PR/UE_8/debounce_to_strobe_ea.vhd
-vcom VHDL-Hardware-Desgin-PR/UE_8/debounce_to_strobe_tb.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_8/debounce/debounce_to_strobe_ea.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_8/debounce/debounce_to_strobe_tb.vhd
 
 # Start Simulation
 vsim -voptargs="\+acc" -t ns debounce_to_strobe_tb
@@ -24,8 +24,7 @@ add wave -noupdate -radix symbolic /debounce_to_strobe_tb/strobe
 # Label
 add wave -divider {Simulation Internal Signals}
 add wave -noupdate -color Cyan -radix unsigned /debounce_to_strobe_tb/debounce_to_strobe/deb_input
-add wave -noupdate -color Cyan -radix unsigned /debounce_to_strobe_tb/debounce_to_strobe/deb_input_next
-add wave -noupdate -color Cyan -radix unsigned /debounce_to_strobe_tb/debounce_to_strobe/deb_input_last
+add wave -noupdate -color Cyan -radix unsigned /debounce_to_strobe_tb/debounce_to_strobe/deb_input_prev
 
 # Label
 add wave -divider {Simulation PWM}

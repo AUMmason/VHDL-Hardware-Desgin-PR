@@ -18,19 +18,15 @@ architecture testbench of tilt_board_debug_tb is
   
   -- Debug Settings
   signal sw_enable_debug_mode : std_ulogic;
-  signal sw_select_axis : std_ulogic := '1';
+  signal sw_select_axis : std_ulogic;
   signal sw_select_increment_amount : std_ulogic;
   signal btn_increase : std_ulogic;
   signal btn_decrease : std_ulogic;
 
   signal enable_debug_mode, debug_adc_valid_strobe : std_ulogic;
-  signal debug_adc_value_axis : unsigned(ADC_BIT_WIDTH - 1 downto 0);
+  signal debug_adc_value_x, debug_adc_value_y : unsigned(ADC_BIT_WIDTH - 1 downto 0);
 
   -- Other board settings
-  signal enable_filter : std_ulogic := '1';
-  signal axis_comp_async : std_ulogic;
-  signal axis_pwm_pin : std_ulogic;
-  signal axis_servo_pwm_pin : std_ulogic;
 
   signal LED_X00, LED_0X0, LED_00X : std_ulogic_vector(0 to 6);
   
@@ -53,29 +49,9 @@ begin
     btn_decrease_i => btn_decrease,
 
     enable_debug_mode_o => enable_debug_mode,
-    adc_value_x_o => debug_adc_value_axis,
-    adc_value_y_o => open,
+    adc_value_x_o => debug_adc_value_x,
+    adc_value_y_o => debug_adc_value_y,
     adc_valid_strobe_o => debug_adc_valid_strobe
-  );
-
-  tilt_board_debug : entity work.tilt_board_debug(rtl) generic map (
-    ADC_BIT_WIDTH => ADC_BIT_WIDTH
-  ) port map (
-    clk_i => clk,
-    reset_i => reset,
-
-    debug_mode_enabled_i => enable_debug_mode,
-    debug_enable_filter_i => enable_filter,
-    debug_adc_value_i => debug_adc_value_axis,
-    debug_adc_valid_strobe_i => debug_adc_valid_strobe,
-
-    axis_comp_async_i => axis_comp_async,
-    axis_pwm_pin_o => axis_pwm_pin,
-    axis_servo_pwm_pin_o => axis_servo_pwm_pin,
-    
-    LED_X00_o => LED_X00,
-    LED_0X0_o => LED_0X0,
-    LED_00X_o => LED_00X
   );
 
   btn_increase <= not btn_increase after 500 us when btn_increase_control = '1' else '0';
@@ -87,7 +63,8 @@ begin
     reset <= '1';
     sw_select_increment_amount <= '0';
     sw_enable_debug_mode <= '1';
-
+    sw_select_axis <= '1';
+    
     wait for 50 us;
 
     reset <= '0';
@@ -142,30 +119,5 @@ begin
 
     wait;
   end process;
-
-  Stimuli_2: process is
-  begin
-
-    wait for 50 ns;
-    
-    axis_comp_async <= '1';
-
-    wait for 500 ms;
-
-    enable_filter <= '0';
-
-    wait for 250 ms;
-
-    enable_filter <= '1';
-
-    wait for 4750 ms;
-
-    axis_comp_async <= '0';
-    wait for 5500 ms;
-
-    wait;
-
-  end process;
-
 
 end architecture testbench;
