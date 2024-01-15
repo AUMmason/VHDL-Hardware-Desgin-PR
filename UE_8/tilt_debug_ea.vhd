@@ -18,8 +18,7 @@ entity tilt_debug is
     signal axis_pwm_pin_o : out std_ulogic;
     signal axis_servo_pwm_pin_o : out std_ulogic;
     -- 3x Outputs for each 7seg Display (for on Axis) (6 in Total)
-    signal LED_X00_o, LED_0X0_o, LED_00X_o : out std_ulogic_vector(0 to 6);
-    signal debug_led_o : out std_ulogic
+    signal LED_X00_o, LED_0X0_o, LED_00X_o : out std_ulogic_vector(0 to 6)
   );
 end entity tilt_debug;
 
@@ -49,7 +48,6 @@ begin
     sw_select_increment_amount_i => sw_select_increment_amount_i,
     btn_increase_i => btn_increase_i,
     btn_decrease_i => btn_decrease_i,
-    debug_led_o => debug_led_o,
     adc_value_x_o => adc_value,
     adc_value_y_o => open,
     adc_valid_strobe_o => adc_valid_strobe

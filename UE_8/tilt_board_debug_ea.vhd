@@ -6,7 +6,7 @@ use IEEE.math_real.all;
 use work.servo_package.all;
 use work.tilt_package.all;
 
-entity tilt_board is
+entity tilt_board_debug is
   generic (
     ADC_BIT_WIDTH : natural
   );
@@ -15,7 +15,7 @@ entity tilt_board is
     signal debug_mode_enabled_i : in std_ulogic;
     signal debug_enable_filter_i : in std_ulogic;
     signal debug_adc_value_i : in unsigned(ADC_BIT_WIDTH - 1 downto 0);
-    signal debug_adc_unfiltered_valid_strobe_i : in std_ulogic;
+    signal debug_adc_valid_strobe_i : in std_ulogic;
 
     -- Inputs
     signal axis_comp_async_i : in std_ulogic;
@@ -26,9 +26,9 @@ entity tilt_board is
     -- 3x Outputs for each 7seg Display (for on Axis) (6 in Total)
     signal LED_X00_o, LED_0X0_o, LED_00X_o : out std_ulogic_vector(0 to 6)
   );
-end entity tilt_board;
+end entity tilt_board_debug;
 
-architecture rtl of tilt_board is
+architecture rtl of tilt_board_debug is
   constant SERVO_PWM_BIT_WIDTH : natural := integer( ceil(log2(real( SERVO_SIGNAL_MAX ))) );
   constant BIN2BCD_BIT_WIDTH : natural := 16;
   constant SEVEN_SEG_BIT_WIDTH : natural := 4;
@@ -46,14 +46,13 @@ architecture rtl of tilt_board is
 
   -- Transfer Signals
   signal axis_pwm_pin, debug_axis_pwm_pin : std_ulogic;
-  signal debug_adc_valid_strobe : std_ulogic;
   signal debug_adc_value : unsigned(ADC_BIT_WIDTH - 1 downto 0);
 begin
   
   -- * Debug Signal Assignments
   adc_value <= debug_adc_value when debug_mode_enabled_i = '1' else adc_value_filtered;
   axis_pwm_pin_o <= debug_axis_pwm_pin when debug_mode_enabled_i = '1' else axis_pwm_pin;
-  adc_valid_strobe <= debug_adc_valid_strobe when debug_mode_enabled_i = '1' else adc_filterd_valid_strobe;
+  adc_valid_strobe <= debug_adc_valid_strobe_i when debug_mode_enabled_i = '1' else adc_filterd_valid_strobe;
 
   Synchronizer : entity work.sync_chain(rtl) generic map (
     CHAIN_LENGTH => SYNC_CHAIN_LENGTH -- high enough value for synchronization
