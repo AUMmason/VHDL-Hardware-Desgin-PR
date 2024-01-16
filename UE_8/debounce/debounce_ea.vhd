@@ -32,7 +32,7 @@ architecture rtl of debounce is
   
   type FSM_STATE is (START, PRESSED, UNPRESSED);
   signal state, state_next : FSM_STATE;
-  signal counter_value : unsigned(BIT_WIDTH - 1 downto 0);
+  signal counter_value : unsigned(BIT_WIDTH - 1 downto 0) := to_unsigned(0, BIT_WIDTH); -- * has to be initialized
   signal reset_counter : std_ulogic;
 begin
   
@@ -47,6 +47,8 @@ begin
         if counter_value < COUNTER_MAX then  
           -- prevent overflow, because this would produce additional delay
           counter_value <= counter_value + to_unsigned(1, BIT_WIDTH);
+        else 
+          counter_value <= counter_value;
         end if;
       else 
         counter_value <= to_unsigned(0, BIT_WIDTH);
@@ -54,7 +56,7 @@ begin
     end if;
   end process clk;
   
-  state_machine: process(state, button_i, counter_value, reset_counter)
+  state_machine: process(state, button_i, counter_value)
   begin
     state_next <= state;
 
@@ -63,29 +65,32 @@ begin
         debounce_o <= '0';
         if button_i = '1' then
           state_next <= PRESSED;
-          reset_counter <= '1';
         end if;
       when PRESSED => 
-        reset_counter <= '0';
         debounce_o <= '1';
         if counter_value >= COUNTER_MAX_VALUE then
           if button_i = '0' then
             state_next <= UNPRESSED;
-            reset_counter <= '1';
           end if;
         end if;
       when UNPRESSED =>
-        reset_counter <= '0';
         debounce_o <= '0';
         if counter_value >= COUNTER_MAX_VALUE then
           state_next <= START;
-          reset_counter <= '1';
         end if;
       when others =>
         -- FALLBACK
         state_next <= state;
-    end case;
-    
+    end case;    
   end process state_machine;
+
+  counter: process(state, state_next)
+  begin
+    if state = state_next then
+      reset_counter <= '0';
+    else 
+      reset_counter <= '1';
+    end if;
+  end process counter;
 
 end architecture rtl;
