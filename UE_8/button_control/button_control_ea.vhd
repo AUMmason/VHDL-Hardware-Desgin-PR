@@ -15,7 +15,7 @@ entity button_control is
     ADC_BIT_WIDTH : natural;
     DEBOUNCE_TIME_MS : natural;
     CLOCK_FREQUENCY_HZ : natural;
-    DEFAULT_DEBUG_ADC_VALUE : natural -- ? What should the default value be ?
+    DEFAULT_ADC_VALUE : natural -- ? What should the default value be ?
   );
   port (
     -- Inputs:
@@ -42,7 +42,7 @@ architecture rtl of button_control is
   signal sw_enable_debug_mode, sw_select_axis, sw_select_increment_amount : std_ulogic;
   signal btn_increase, btn_decrease : std_ulogic;
 
-  signal adc_value_x, adc_value_y, adc_value_x_next, adc_value_y_next : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(DEFAULT_DEBUG_ADC_VALUE, ADC_BIT_WIDTH);
+  signal adc_value_x, adc_value_y, adc_value_x_next, adc_value_y_next : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(DEFAULT_ADC_VALUE, ADC_BIT_WIDTH);
   signal adc_valid_strobe, adc_valid_strobe_next : std_ulogic;
 
   impure function set_adc_value(
@@ -83,8 +83,8 @@ begin -- Architecture
   clk: process(clk_i, reset_i)
   begin
     if reset_i = '1' then
-      adc_value_x <= to_unsigned(DEFAULT_DEBUG_ADC_VALUE, ADC_BIT_WIDTH); 
-      adc_value_y <= to_unsigned(DEFAULT_DEBUG_ADC_VALUE, ADC_BIT_WIDTH);
+      adc_value_x <= to_unsigned(DEFAULT_ADC_VALUE, ADC_BIT_WIDTH); 
+      adc_value_y <= to_unsigned(DEFAULT_ADC_VALUE, ADC_BIT_WIDTH);
       adc_valid_strobe <= '0';
     elsif rising_edge(clk_i) then
       adc_value_x <= adc_value_x_next;

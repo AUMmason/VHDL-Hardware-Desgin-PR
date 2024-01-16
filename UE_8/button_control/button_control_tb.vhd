@@ -34,7 +34,7 @@ begin
     ADC_BIT_WIDTH => ADC_BIT_WIDTH,
     DEBOUNCE_TIME_MS => 20,
     CLOCK_FREQUENCY_HZ => CLK_FREQUENCY,
-    DEFAULT_DEBUG_ADC_VALUE => ADC_VALUE_RANGE / 2 -- 125
+    DEFAULT_ADC_VALUE => ADC_VALUE_RANGE / 2 -- 125
   ) port map (
     clk_i => clk,
     reset_i => reset,

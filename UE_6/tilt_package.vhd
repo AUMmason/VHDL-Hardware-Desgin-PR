@@ -5,6 +5,8 @@ use IEEE.math_real.all;
 
 package tilt_package is
   constant SYNC_CHAIN_LENGTH : natural := 2;
+  constant BTN_DEBOUNCE_TIME_MS : natural := 20; -- 20 ms
+  constant DEFAULT_ADC_VALUE_DEBUG : natural := 125;
 
   constant CLOCK_FREQ : natural := 50e6; -- 50 Mhz
   constant DELTA_ADC_PWM_FREQ : natural := 200e3; -- 200 kHz
