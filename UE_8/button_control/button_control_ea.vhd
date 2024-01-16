@@ -94,7 +94,7 @@ begin -- Architecture
   end process clk;
 
   -- Note: a Process was chosen for processing increases/decreases in adc_values since the code is more well arranged!
-  btn_actions: process(adc_value_x, adc_value_y, btn_increase, btn_decrease, sw_select_axis, sw_enable_debug_mode, sw_select_increment_amount)
+  btn_actions: process(adc_valid_strobe, adc_value_x, adc_value_y, btn_increase, btn_decrease, sw_select_axis, sw_enable_debug_mode, sw_select_increment_amount)
   begin
     adc_value_x_next <= adc_value_x;
     adc_value_y_next <= adc_value_y;

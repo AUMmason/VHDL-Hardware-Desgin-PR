@@ -28,7 +28,7 @@ begin
     end if;
   end process clk;
 
-  AssignHoldValue: process(strobe_i, value_i)
+  AssignHoldValue: process(strobe_i, value_i, hold_value)
   begin
     hold_value_next <= hold_value;
 

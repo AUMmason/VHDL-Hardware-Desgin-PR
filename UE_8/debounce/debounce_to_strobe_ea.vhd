@@ -25,7 +25,7 @@ begin
   Debounce: entity work.debounce(rtl) generic map (
     CLK_FREQUENCY_HZ => CLK_FREQUENCY_HZ,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
-  ) port map(
+  ) port map (
     clk_i => clk_i,
     reset_i => reset_i,
     button_i => button_i,
@@ -43,6 +43,8 @@ begin
     end if;
   end process clk;
 
+  -- ? Potential Issue ? deb_last is not in sensitivity list
+  -- Todo: Implement better edge detection
   State: process(deb_input, strobe)
   begin
     strobe_next <= strobe;
