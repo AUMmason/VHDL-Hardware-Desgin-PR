@@ -22,7 +22,7 @@ begin
   clk: process(clk_i, reset_i)
   begin
     if reset_i = '1' then
-      hold_value <= value_i; -- ? Is this correct ? (POTENTIAL ISSUE) 
+      hold_value <= to_unsigned(0, BIT_WIDTH); -- ? Is this correct ? (POTENTIAL ISSUE) 
     elsif rising_edge(clk_i) then
       hold_value <= hold_value_next;
     end if;
