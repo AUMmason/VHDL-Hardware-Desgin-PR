@@ -24,7 +24,8 @@ add wave -noupdate -radix symbolic /debounce_to_strobe_tb/strobe
 # Label
 add wave -divider {Simulation Internal Signals}
 add wave -noupdate -color Cyan -radix unsigned /debounce_to_strobe_tb/debounce_to_strobe/deb_input
-add wave -noupdate -color Cyan -radix unsigned /debounce_to_strobe_tb/debounce_to_strobe/deb_input_prev
+add wave -noupdate -color Cyan -radix unsigned /debounce_to_strobe_tb/debounce_to_strobe/deb_signal
+add wave -noupdate -color Cyan -radix unsigned /debounce_to_strobe_tb/debounce_to_strobe/deb_signal_next
 
 # Label
 add wave -divider {Simulation PWM}
