@@ -55,7 +55,7 @@ begin
     end if;
   end process clk;
 
-  Filter: process(strobe_data_valid_i, data_i, data_last)
+  Filter: process(strobe_data_valid_i, data_i, data_last, sum)
   begin
     strobe_data_valid_next <= strobe_data_valid_i;
     sum_next <= sum;
