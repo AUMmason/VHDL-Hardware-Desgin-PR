@@ -54,6 +54,8 @@ architecture rtl of button_control is
   begin
     if enable_factor = '1' then 
       value := resize(value * factor, ADC_BIT_WIDTH);
+    else 
+      value := value;
     end if;
     -- Assuming that only one button will be pressed at a time!
     if increase = '1' then
@@ -68,6 +70,8 @@ architecture rtl of button_control is
       else 
         total := ADC_MIN_VALUE;
       end if;
+    else 
+      total := total;
     end if;
 
     return total;
