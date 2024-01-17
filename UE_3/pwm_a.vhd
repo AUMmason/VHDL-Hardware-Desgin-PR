@@ -23,7 +23,7 @@ begin
     end if ;
   end process ; -- clk
 
-  counter_assignment: process(counter_val)  
+  counter_assignment: process(counter_val, period_counter_val_i)  
   begin
     next_counter_val <= counter_val;  
     if counter_val < period_counter_val_i - to_unsigned(1, COUNTER_LEN) then

@@ -43,7 +43,7 @@ begin
 
   adc_value_o <= adc_value;
 
-  Sampler: process(sampling_strobe, adc_value)
+  Sampler: process(sampling_strobe, adc_value, comparator_i)
   -- The sampling strobe is being sent multiple times during a PWM-Period
   -- and updates the current ADC value each time.
   begin
