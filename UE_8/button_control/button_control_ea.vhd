@@ -97,28 +97,25 @@ begin -- Architecture
     end if;
   end process clk;
 
-  -- Note: a Process was chosen for processing increases/decreases in adc_values since the code is more well arranged!
   btn_actions: process(adc_valid_strobe, adc_value_x, adc_value_y, btn_increase, btn_decrease, sw_select_axis, sw_enable_debug_mode, sw_select_increment_amount)
   begin
+    adc_valid_strobe_next <= adc_valid_strobe;
     adc_value_x_next <= adc_value_x;
     adc_value_y_next <= adc_value_y;
-    adc_valid_strobe_next <= adc_valid_strobe;
     
-    if sw_enable_debug_mode = '1' then
-      -- Check for Axis
-      if sw_select_axis = '1' then -- X-Axis is selected
-        adc_value_x_next <= set_adc_value(adc_value_x, ADC_INCREMENT, ADC_INCREMENT_MULTIPLIER, sw_select_increment_amount, btn_increase, btn_decrease);
-      else                         -- Y-Axis is selected
-        adc_value_y_next <= set_adc_value(adc_value_y, ADC_INCREMENT, ADC_INCREMENT_MULTIPLIER, sw_select_increment_amount, btn_increase, btn_decrease);
-      end if;
-      -- Check if any button is pressed -> send strobe for new value!
-      if btn_increase = '1' or btn_decrease = '1' then
-        adc_valid_strobe_next <= '1';
-      else 
-        adc_valid_strobe_next <= '0';
-      end if;
+    if sw_select_axis = '1' then
+      adc_value_x_next <= set_adc_value(adc_value_x, ADC_INCREMENT, ADC_INCREMENT_MULTIPLIER, sw_select_increment_amount, btn_increase, btn_decrease);
     else 
-      adc_valid_strobe_next <= '1'; -- * This is needed so hold_value_on_strobe gets the debug value on debug mode activation 
+      adc_value_y_next <= set_adc_value(adc_value_y, ADC_INCREMENT, ADC_INCREMENT_MULTIPLIER, sw_select_increment_amount, btn_increase, btn_decrease);
+    end if;
+    
+    -- Send Valid Strobe when Button is pressed or debug mode is activated
+    if sw_enable_debug_mode = '0' then -- * Needed for when activating debug mode
+      adc_valid_strobe_next <= '1';
+    elsif btn_increase = '1' or btn_decrease = '1' then
+      adc_valid_strobe_next <= '1';
+    else
+      adc_valid_strobe_next <= '0';
     end if;
   end process btn_actions;
 
