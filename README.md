@@ -11,3 +11,4 @@ A Repo for storing Project files from the Hardware Desgin Praktikum at JKU
 - UE 5: Servo Controller Module
 - UE 6: Tilt-Entity for controlling Servo
 - UE 7: Implementation of Moving-Average-Filter
+- UE 8: Implementation of Debug-Mode for Testing
