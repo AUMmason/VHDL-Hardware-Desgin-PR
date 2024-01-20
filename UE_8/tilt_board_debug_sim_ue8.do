@@ -76,6 +76,6 @@ add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_debug_tb
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_board_debug_tb/tilt_board_debug/binary
 
 
-run 1760 ms
+run 2150 ms
 # Set Zoom Level {from ms} {to ms}
 WaveRestoreZoom {0 ms} {18 ms}
