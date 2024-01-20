@@ -45,38 +45,6 @@ architecture rtl of button_control is
   signal adc_value_x, adc_value_y, adc_value_x_next, adc_value_y_next : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(DEFAULT_ADC_VALUE, ADC_BIT_WIDTH);
   signal adc_valid_strobe, adc_valid_strobe_next : std_ulogic;
 
-  impure function set_adc_value(
-    total_value, increment_value, factor: unsigned(ADC_BIT_WIDTH - 1 downto 0);
-    enable_factor, increase, decrease: std_ulogic) 
-  return unsigned is
-    variable total : unsigned(ADC_BIT_WIDTH - 1 downto 0) := total_value;
-    variable value : unsigned(ADC_BIT_WIDTH - 1 downto 0) := increment_value;
-  begin
-    if enable_factor = '1' then 
-      value := resize(value * factor, ADC_BIT_WIDTH);
-    else 
-      value := value;
-    end if;
-    -- Assuming that only one button will be pressed at a time!
-    if increase = '1' then
-      if total <= ADC_MAX_VALUE - value then -- Example: 242 + 10 = 252 ! -> 250 - 10 = 240 <= 242
-        total := total + value;
-      else 
-        total := ADC_MAX_VALUE;
-      end if;
-    elsif decrease = '1' then
-      if total >= ADC_MIN_VALUE + value then
-        total := total - value;
-      else 
-        total := ADC_MIN_VALUE;
-      end if;
-    else 
-      total := total;
-    end if;
-
-    return total;
-  end function;
-
 begin -- Architecture
 
   enable_debug_mode_o <= sw_enable_debug_mode;
@@ -97,6 +65,12 @@ begin -- Architecture
     end if;
   end process clk;
 
+  -- @ Tutor, I know the code below is bad! I tried splitting off the increment and decrement functionality into
+  -- a function but when synthesizing, it would always result in infered latches for adc_value_x and adc_value_y
+  -- registers. This code does not produce any latches as for now and works just fine.
+  -- I've added another version of this file to the submission of this assignment, maybe you can find a reason why
+  -- I would always get inferred latches. Thank you.
+
   btn_actions: process(adc_valid_strobe, adc_value_x, adc_value_y, btn_increase, btn_decrease, sw_select_axis, sw_enable_debug_mode, sw_select_increment_amount)
   begin
     adc_valid_strobe_next <= adc_valid_strobe;
@@ -104,9 +78,69 @@ begin -- Architecture
     adc_value_y_next <= adc_value_y;
     
     if sw_select_axis = '1' then
-      adc_value_x_next <= set_adc_value(adc_value_x, ADC_INCREMENT, ADC_INCREMENT_MULTIPLIER, sw_select_increment_amount, btn_increase, btn_decrease);
-    else 
-      adc_value_y_next <= set_adc_value(adc_value_y, ADC_INCREMENT, ADC_INCREMENT_MULTIPLIER, sw_select_increment_amount, btn_increase, btn_decrease);
+      if btn_increase = '1' then
+        if sw_select_increment_amount = '1' then
+          if adc_value_x <= ADC_MAX_VALUE - ADC_INCREMENT_MULTIPLIER then
+            adc_value_x_next <= adc_value_x + ADC_INCREMENT_MULTIPLIER;
+          else 
+            adc_value_x_next <= ADC_MAX_VALUE; -- clamp to max Value
+          end if;
+        else 
+          if adc_value_x <= ADC_MAX_VALUE - ADC_INCREMENT then
+            adc_value_x_next <= adc_value_x + ADC_INCREMENT;
+          else 
+            adc_value_x_next <= ADC_MAX_VALUE; -- clamp to max Value
+          end if;
+        end if; 
+      elsif btn_decrease = '1' then
+        if sw_select_increment_amount = '1' then
+          if adc_value_x >= ADC_MIN_VALUE + ADC_INCREMENT_MULTIPLIER then
+            adc_value_x_next <= adc_value_x - ADC_INCREMENT_MULTIPLIER;
+          else 
+            adc_value_x_next <= ADC_MIN_VALUE; -- clamp to min Value
+          end if;
+        else 
+          if adc_value_x >= ADC_MIN_VALUE + ADC_INCREMENT then
+            adc_value_x_next <= adc_value_x - ADC_INCREMENT;
+          else 
+            adc_value_x_next <= ADC_MIN_VALUE; -- clamp to min Value
+          end if;
+        end if;  
+      else
+        adc_value_x_next <= adc_value_x;
+      end if;
+    else
+      if btn_increase = '1' then
+        if sw_select_increment_amount = '1' then
+          if adc_value_y <= ADC_MAX_VALUE - ADC_INCREMENT_MULTIPLIER then
+            adc_value_y_next <= adc_value_y + ADC_INCREMENT_MULTIPLIER;
+          else 
+            adc_value_y_next <= ADC_MAX_VALUE; -- clamp to max Value
+          end if;
+        else 
+          if adc_value_y <= ADC_MAX_VALUE - ADC_INCREMENT then
+            adc_value_y_next <= adc_value_y + ADC_INCREMENT_MULTIPLIER;
+          else 
+            adc_value_y_next <= ADC_MAX_VALUE; -- clamp to max Value
+          end if;
+        end if; 
+      elsif btn_decrease = '1' then
+        if sw_select_increment_amount = '1' then
+          if adc_value_y >= ADC_MIN_VALUE + ADC_INCREMENT_MULTIPLIER then
+            adc_value_y_next <= adc_value_y - ADC_INCREMENT_MULTIPLIER;
+          else 
+            adc_value_y_next <= ADC_MIN_VALUE; -- clamp to min Value
+          end if;
+        else 
+          if adc_value_y >= ADC_MIN_VALUE + ADC_INCREMENT then
+            adc_value_y_next <= adc_value_y - ADC_INCREMENT_MULTIPLIER;
+          else 
+            adc_value_y_next <= ADC_MIN_VALUE; -- clamp to min Value
+          end if;
+        end if;  
+      else
+        adc_value_y_next <= adc_value_y;
+      end if;
     end if;
     
     -- Send Valid Strobe when Button is pressed or debug mode is activated
