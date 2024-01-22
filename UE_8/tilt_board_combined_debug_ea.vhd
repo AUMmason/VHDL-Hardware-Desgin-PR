@@ -74,7 +74,7 @@ begin
     DEFAULT_ADC_VALUE => DEFAULT_ADC_VALUE_DEBUG
   ) port map (
     clk_i => clk_i,
-    reset_i => reset_i,
+    reset_i => reset,
 
     sw_enable_debug_mode_i => sw_enable_debug_mode_i,
     sw_select_axis_i => sw_select_axis_i,
@@ -103,9 +103,11 @@ begin
     axis_pwm_pin_o => x_pwm_pin_o,
     axis_servo_pwm_pin_o => x_servo_pwm_pin_o,
     
-    LED_X00_o => x_LED_X00_o,
+    --! X00 und 00X vertauscht
+
+    LED_X00_o => x_LED_00X_o,
     LED_0X0_o => x_LED_0X0_o,
-    LED_00X_o => x_LED_00X_o
+    LED_00X_o => x_LED_X00_o
   );
 
   tilt_board_debug_y : entity work.tilt_board_debug(rtl) generic map (
@@ -123,9 +125,11 @@ begin
     axis_pwm_pin_o => y_pwm_pin_o,
     axis_servo_pwm_pin_o => y_servo_pwm_pin_o,
     
-    LED_X00_o => y_LED_X00_o,
+    --! X00 und 00X vertauscht
+
+    LED_X00_o => y_LED_00X_o,
     LED_0X0_o => y_LED_0X0_o,
-    LED_00X_o => y_LED_00X_o
+    LED_00X_o => y_LED_X00_o
   );
     
 end architecture rtl;

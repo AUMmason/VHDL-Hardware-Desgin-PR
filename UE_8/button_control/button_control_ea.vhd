@@ -119,7 +119,7 @@ begin -- Architecture
           end if;
         else 
           if adc_value_y <= ADC_MAX_VALUE - ADC_INCREMENT then
-            adc_value_y_next <= adc_value_y + ADC_INCREMENT_MULTIPLIER;
+            adc_value_y_next <= adc_value_y + ADC_INCREMENT;
           else 
             adc_value_y_next <= ADC_MAX_VALUE; -- clamp to max Value
           end if;
@@ -133,7 +133,7 @@ begin -- Architecture
           end if;
         else 
           if adc_value_y >= ADC_MIN_VALUE + ADC_INCREMENT then
-            adc_value_y_next <= adc_value_y - ADC_INCREMENT_MULTIPLIER;
+            adc_value_y_next <= adc_value_y - ADC_INCREMENT;
           else 
             adc_value_y_next <= ADC_MIN_VALUE; -- clamp to min Value
           end if;

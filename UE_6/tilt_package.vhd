@@ -36,8 +36,13 @@ package tilt_package is
   constant MIN_VOLTAGE : natural := 2; --V (= 0°)
   constant MAX_VOLTAGE : natural := 3; --V (= 180°)
 
-  constant ADC_VALUE_0_DEG : natural := (ADC_VALUE_RANGE * MIN_VOLTAGE) / SUPPLY_VOLTAGE; -- 100
-  constant ADC_VALUE_180_DEG : natural := (ADC_VALUE_RANGE * MAX_VOLTAGE) / SUPPLY_VOLTAGE; -- 150
+--  constant ADC_VALUE_0_DEG : natural := (ADC_VALUE_RANGE * MIN_VOLTAGE) / SUPPLY_VOLTAGE; -- 100
+--  constant ADC_VALUE_180_DEG : natural := (ADC_VALUE_RANGE * MAX_VOLTAGE) / SUPPLY_VOLTAGE; -- 150
+
+  -- ! Changed Min and Max values for ADC in order to get higher resolution (in regards to)
+
+  constant ADC_VALUE_0_DEG : natural := 0;
+  constant ADC_VALUE_180_DEG : natural := ADC_VALUE_RANGE;
 
   constant ADC_DEG_RANGE : natural := ADC_VALUE_180_DEG - ADC_VALUE_0_DEG;
 
