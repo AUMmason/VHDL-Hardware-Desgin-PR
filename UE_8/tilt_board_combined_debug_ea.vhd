@@ -58,7 +58,7 @@ begin
   -- Other Inputs get debounced in button_control
   -- ? @Tutor: Should the reset button also be debounced?
   debounce_enable_filter_sw : entity work.debounce(rtl) generic map (
-    CLK_FREQUENCY_HZ => CLOCK_FREQ,
+    CLK_FREQUENCY_HZ => BOARD_CLOCK_FREQ,
     DEBOUNCE_TIME_MS => BTN_DEBOUNCE_TIME_MS
   ) port map (
     clk_i => clk_i,
@@ -70,7 +70,7 @@ begin
   button_control : entity work.button_control(rtl) generic map (
     ADC_BIT_WIDTH => ADC_BIT_WIDTH,
     DEBOUNCE_TIME_MS => BTN_DEBOUNCE_TIME_MS,
-    CLOCK_FREQUENCY_HZ => CLOCK_FREQ,
+    CLOCK_FREQUENCY_HZ => BOARD_CLOCK_FREQ,
     DEFAULT_ADC_VALUE => DEFAULT_ADC_VALUE_DEBUG
   ) port map (
     clk_i => clk_i,

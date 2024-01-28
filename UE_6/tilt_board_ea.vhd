@@ -49,8 +49,8 @@ begin
   );
 
   DeltaADC : entity work.delta_adc(rtl) generic map (
-    PWM_PERIOD => CLOCK_FREQ / DELTA_ADC_PWM_FREQ,
-    SAMPLING_PERIOD => CLOCK_FREQ / DELTA_ADC_SAMPLING_FREQ,
+    PWM_PERIOD => BOARD_CLOCK_FREQ / DELTA_ADC_PWM_FREQ,
+    SAMPLING_PERIOD => BOARD_CLOCK_FREQ / DELTA_ADC_SAMPLING_FREQ,
     ADC_BIT_WIDTH => ADC_BIT_WIDTH
   ) port map (
     clk_i => clk_i,

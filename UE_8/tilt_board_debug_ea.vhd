@@ -54,7 +54,7 @@ begin
   adc_valid_strobe <= debug_adc_valid_strobe_i when debug_mode_enabled_i = '1' else adc_filterd_valid_strobe;
 
   Synchronizer : entity work.sync_chain(rtl) generic map (
-    CHAIN_LENGTH => SYNC_CHAIN_LENGTH -- high enough value for synchronization
+    CHAIN_LENGTH => SYNC_CHAIN_LENGTH
   ) port map (
     Async_i => axis_comp_async_i,
     Sync_o => axis_comp_sync,
@@ -63,8 +63,8 @@ begin
   );
 
   DeltaADC : entity work.delta_adc(rtl) generic map (
-    PWM_PERIOD => CLOCK_FREQ / DELTA_ADC_PWM_FREQ,
-    SAMPLING_PERIOD => CLOCK_FREQ / DELTA_ADC_SAMPLING_FREQ,
+    PWM_PERIOD => BOARD_CLOCK_FREQ / DELTA_ADC_PWM_FREQ,
+    SAMPLING_PERIOD => BOARD_CLOCK_FREQ / DELTA_ADC_SAMPLING_FREQ,
     ADC_BIT_WIDTH => ADC_BIT_WIDTH
   ) port map (
     clk_i => clk_i,
