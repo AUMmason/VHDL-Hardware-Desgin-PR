@@ -32,10 +32,11 @@ add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_
 add wave -noupdate -color {Cornflower Blue} -radix unsigned /moving_average_filter_tb/Moving_Average/sum_next
 add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_Average/data_last
 add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_Average/data_o
-add wave -noupdate -color {Cornflower Blue} -radix unsigned /moving_average_filter_tb/Moving_Average/REG_AMOUNT
-add wave -noupdate -radix unsigned /moving_average_filter_tb/Moving_Average/ShiftRegister/data_chain
-add wave -noupdate -color {Cornflower Blue} -radix unsigned /moving_average_filter_tb/Moving_Average/ShiftRegister/data_chain_next
+add wave -noupdate -color {Cornflower Blue} -radix decimal /moving_average_filter_tb/Moving_Average/REGISTER_LENGTH
+add wave -noupdate -color {Cornflower Blue} -radix decimal /moving_average_filter_tb/Moving_Average/SHIFT_AMOUNT
+add wave -noupdate -radix unsigned /moving_average_filter_tb/Moving_Average/shift_register/data_chain
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /moving_average_filter_tb/Moving_Average/shift_register/data_chain_next
 
-run 2500 ms
+run 3200 ms
 # Set Zoom Level {from ms} {to ms}
-WaveRestoreZoom {0 ms} {2550 ms}
+WaveRestoreZoom {0 ms} {3250 ms}

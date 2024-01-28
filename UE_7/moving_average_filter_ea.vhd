@@ -6,8 +6,9 @@ use IEEE.math_real.all;
 entity moving_average_filter is
   generic (
     BIT_WIDTH : natural;
-    -- gets converted to nearest power of two!
-    FILTER_ORDER: natural -- = N
+    REGISTER_LENGTH : positive range 2 to 128
+    -- REGISTER_LENGTH has to be power of two in order to make division work
+    -- REGISTER_LENGTH is effecively FITLER_ORDER + 1.
   );
   port (
     signal enable_i : in std_ulogic;
@@ -19,24 +20,18 @@ entity moving_average_filter is
 end entity moving_average_filter;
 
 architecture rtl of moving_average_filter is
-  -- (Division requires N + 1 according to specification):
-  -- The code below calculates a N so that (N + 1) is a power of 2 (which is needed to perform a division)
-  constant CLAMPED_FILTER_ORDER : natural := integer( ceil(log2(real(FILTER_ORDER + 1))) ); 
-  constant REG_AMOUNT : natural := 2 ** CLAMPED_FILTER_ORDER;
-    
-  signal sum : unsigned(BIT_WIDTH + REG_AMOUNT - 1 downto 0);
-  signal sum_next : unsigned(BIT_WIDTH + REG_AMOUNT - 1 downto 0);
-
+  constant SHIFT_AMOUNT : natural := integer( ceil(log2(real( REGISTER_LENGTH ))) );
+  signal sum : unsigned(BIT_WIDTH + REGISTER_LENGTH - 1 downto 0);
+  signal sum_next : unsigned(BIT_WIDTH + REGISTER_LENGTH - 1 downto 0);
   signal data_last : unsigned(BIT_WIDTH - 1 downto 0);
   signal strobe_data_valid_next : std_ulogic;
 begin
-
   -- Division of a number that is a power n of 2 equals a bit shift right by n:
-  data_o <= resize(sum srl CLAMPED_FILTER_ORDER, BIT_WIDTH) when enable_i = '1' else data_i; 
+  data_o <= resize(sum srl SHIFT_AMOUNT, BIT_WIDTH) when enable_i = '1' else data_i; 
 
-  ShiftRegister: entity work.unsigned_shift_register(rtl) generic map (
+  shift_register: entity work.unsigned_shift_register(rtl) generic map (
     BIT_WIDTH => BIT_WIDTH,
-    LENGTH => REG_AMOUNT
+    LENGTH => REGISTER_LENGTH + 1 -- ! Register must be n + 1 long (to subtract the oldest value from the sum properly)
   ) port map (
     clk_i => strobe_data_valid_i,
     reset_i => reset_i,
@@ -55,13 +50,13 @@ begin
     end if;
   end process clk;
 
-  Filter: process(strobe_data_valid_i, data_i, data_last, sum)
+  filter: process(strobe_data_valid_i, data_i, data_last, sum)
   begin
     strobe_data_valid_next <= strobe_data_valid_i;
     sum_next <= sum;
     if strobe_data_valid_i = '1' then
-      sum_next <= sum + resize(data_i, BIT_WIDTH + REG_AMOUNT) - resize(data_last, BIT_WIDTH + REG_AMOUNT);
+      sum_next <= sum + resize(data_i, BIT_WIDTH + REGISTER_LENGTH) - resize(data_last, BIT_WIDTH + REGISTER_LENGTH);
     end if;
-  end process Filter;
+  end process filter;
 
 end architecture rtl;

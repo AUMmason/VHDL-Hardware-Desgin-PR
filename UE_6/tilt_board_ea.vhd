@@ -62,7 +62,7 @@ begin
   );
 
   MovingAverageFilter: entity work.moving_average_filter(rtl) generic map (
-    FILTER_ORDER => MOV_AVG_LENGTH,
+    REGISTER_LENGTH => MOV_AVG_LENGTH,
     BIT_WIDTH => ADC_BIT_WIDTH
   ) port map (
     enable_i => enable_filter_i,

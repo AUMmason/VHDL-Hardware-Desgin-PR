@@ -18,7 +18,7 @@ package tilt_package is
   constant SERVO_PWM_FREQ : natural := DELTA_ADC_SAMPLING_FREQ; -- 50 Hz
 
   -- Moving Average Filter
-  constant MOV_AVG_LENGTH : natural := 6;
+  constant MOV_AVG_LENGTH : natural := 8;
 
   -- Calculate ADC values for 0° and 180° respectively
   -- ADC Values can be between 0 and 250.

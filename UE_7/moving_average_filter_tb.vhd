@@ -12,7 +12,7 @@ architecture rtl of moving_average_filter_tb is
   constant BIT_WIDTH : natural := integer( ceil(log2(real( ADC_VALUE_RANGE ))) );
   constant CLK_FREQUENCY : natural := 50;
   constant CLK_PERIOD : time := 1000 ms / CLK_FREQUENCY;
-  constant REGISTER_LENGTH : natural := 6;
+  constant REGISTER_LENGTH : natural := 8;
 
   constant STROBE_PERIOD : natural := 3;
 
@@ -36,7 +36,7 @@ begin
 
   Moving_Average: entity work.moving_average_filter(rtl) generic map (
     BIT_WIDTH => BIT_WIDTH,
-    FILTER_ORDER => REGISTER_LENGTH
+    REGISTER_LENGTH => REGISTER_LENGTH
   ) port map (
     enable_i => enable,
     clk_i => clk,
@@ -55,7 +55,7 @@ begin
 
     reset <= '0';
 
-    wait for 10 ms;
+    wait for 50 ms;
 
     data_i <= to_unsigned(250, BIT_WIDTH);
     
@@ -112,7 +112,15 @@ begin
 
     enable <= '1';
     data_i <= to_unsigned(0, BIT_WIDTH);
-    
+
+    wait for 550 ms;
+
+    -- reset <= '1';
+    -- wait for 10 ms;
+    -- reset <= '0';
+
+    data_i <= to_unsigned(250, BIT_WIDTH);
+
     wait;
 
   end process Stimuli;
