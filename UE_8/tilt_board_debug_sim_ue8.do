@@ -20,6 +20,7 @@ vcom VHDL-Hardware-Desgin-PR/UE_6/tilt_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_8/debounce/debounce_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_8/debounce/debounce_to_strobe_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_8/delta_adc_debug_ea.vhd
+vcom VHDL-Hardware-Desgin-PR/UE_8/button_control/increment_control_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_8/button_control/button_control_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_8/tilt_board_debug_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_8/tilt_board_debug_tb.vhd
@@ -61,10 +62,6 @@ add wave -noupdate -color {Cornflower Blue} -radix unsigned tilt_board_debug_tb/
 
 # Label
 add wave -divider {button_control}
-add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_debug_tb/button_control/adc_value_x
-add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_debug_tb/button_control/adc_value_x_next
-add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_debug_tb/button_control/adc_value_y
-add wave -noupdate -color {Cornflower Blue} -radix unsigned /tilt_board_debug_tb/button_control/adc_value_y_next
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_board_debug_tb/button_control/btn_increase
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_board_debug_tb/button_control/btn_decrease
 add wave -noupdate -color {Cornflower Blue} -radix symbolic /tilt_board_debug_tb/button_control/adc_valid_strobe

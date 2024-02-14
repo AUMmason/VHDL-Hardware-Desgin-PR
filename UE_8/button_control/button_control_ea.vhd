@@ -14,8 +14,7 @@ entity button_control is
   generic (
     ADC_BIT_WIDTH : natural;
     DEBOUNCE_TIME_MS : natural;
-    CLOCK_FREQUENCY_HZ : natural;
-    DEFAULT_ADC_VALUE : natural -- ? What should the default value be ?
+    CLOCK_FREQUENCY_HZ : natural
   );
   port (
     -- Inputs:
@@ -33,179 +32,130 @@ entity button_control is
 end entity button_control;
 
 architecture rtl of button_control is
-  constant ADC_INCREMENT : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(1, ADC_BIT_WIDTH);
-  constant ADC_INCREMENT_MULTIPLIER : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(10, ADC_BIT_WIDTH);
-  -- The 2 constants below are not in a package because similar names are used in other files
-  constant ADC_MAX_VALUE : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(ADC_VALUE_RANGE, ADC_BIT_WIDTH);
-  constant ADC_MIN_VALUE : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(0, ADC_BIT_WIDTH);
-
   signal sw_enable_debug_mode, sw_select_axis, sw_select_increment_amount : std_ulogic;
   signal btn_increase, btn_decrease : std_ulogic;
-
-  signal adc_value_x, adc_value_y, adc_value_x_next, adc_value_y_next : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(DEFAULT_ADC_VALUE, ADC_BIT_WIDTH);
+  signal increase_x, increase_y, decrease_x, decrease_y : std_ulogic;
   signal adc_valid_strobe, adc_valid_strobe_next : std_ulogic;
 
 begin -- Architecture
 
   enable_debug_mode_o <= sw_enable_debug_mode;
-  adc_value_x_o <= adc_value_x;
-  adc_value_y_o <= adc_value_y;
   adc_valid_strobe_o <= adc_valid_strobe;
 
-  clk: process(clk_i, reset_i)
+  clk : process (clk_i, reset_i)
   begin
     if reset_i = '1' then
-      adc_value_x <= to_unsigned(DEFAULT_ADC_VALUE, ADC_BIT_WIDTH); 
-      adc_value_y <= to_unsigned(DEFAULT_ADC_VALUE, ADC_BIT_WIDTH);
       adc_valid_strobe <= '0';
     elsif rising_edge(clk_i) then
-      adc_value_x <= adc_value_x_next;
-      adc_value_y <= adc_value_y_next;
       adc_valid_strobe <= adc_valid_strobe_next;
     end if;
   end process clk;
 
-  -- @ Tutor, I know the code below is bad! I tried splitting off the increment and decrement functionality into
-  -- a function but when synthesizing, it would always result in infered latches for adc_value_x and adc_value_y
-  -- registers. This code does not produce any latches as for now and works just fine.
-  -- I've added another version of this file to the submission of this assignment, maybe you can find a reason why
-  -- I would always get inferred latches. Thank you.
-
-  btn_actions: process(adc_valid_strobe, adc_value_x, adc_value_y, btn_increase, btn_decrease, sw_select_axis, sw_enable_debug_mode, sw_select_increment_amount)
+  strobe : process (btn_increase, btn_decrease)
   begin
     adc_valid_strobe_next <= adc_valid_strobe;
-    adc_value_x_next <= adc_value_x;
-    adc_value_y_next <= adc_value_y;
-    
-    if sw_select_axis = '1' then
-      if btn_increase = '1' then
-        if sw_select_increment_amount = '1' then
-          if adc_value_x <= ADC_MAX_VALUE - ADC_INCREMENT_MULTIPLIER then
-            adc_value_x_next <= adc_value_x + ADC_INCREMENT_MULTIPLIER;
-          else 
-            adc_value_x_next <= ADC_MAX_VALUE; -- clamp to max Value
-          end if;
-        else 
-          if adc_value_x <= ADC_MAX_VALUE - ADC_INCREMENT then
-            adc_value_x_next <= adc_value_x + ADC_INCREMENT;
-          else 
-            adc_value_x_next <= ADC_MAX_VALUE; -- clamp to max Value
-          end if;
-        end if; 
-      elsif btn_decrease = '1' then
-        if sw_select_increment_amount = '1' then
-          if adc_value_x >= ADC_MIN_VALUE + ADC_INCREMENT_MULTIPLIER then
-            adc_value_x_next <= adc_value_x - ADC_INCREMENT_MULTIPLIER;
-          else 
-            adc_value_x_next <= ADC_MIN_VALUE; -- clamp to min Value
-          end if;
-        else 
-          if adc_value_x >= ADC_MIN_VALUE + ADC_INCREMENT then
-            adc_value_x_next <= adc_value_x - ADC_INCREMENT;
-          else 
-            adc_value_x_next <= ADC_MIN_VALUE; -- clamp to min Value
-          end if;
-        end if;  
-      else
-        adc_value_x_next <= adc_value_x;
-      end if;
-    else
-      if btn_increase = '1' then
-        if sw_select_increment_amount = '1' then
-          if adc_value_y <= ADC_MAX_VALUE - ADC_INCREMENT_MULTIPLIER then
-            adc_value_y_next <= adc_value_y + ADC_INCREMENT_MULTIPLIER;
-          else 
-            adc_value_y_next <= ADC_MAX_VALUE; -- clamp to max Value
-          end if;
-        else 
-          if adc_value_y <= ADC_MAX_VALUE - ADC_INCREMENT then
-            adc_value_y_next <= adc_value_y + ADC_INCREMENT;
-          else 
-            adc_value_y_next <= ADC_MAX_VALUE; -- clamp to max Value
-          end if;
-        end if; 
-      elsif btn_decrease = '1' then
-        if sw_select_increment_amount = '1' then
-          if adc_value_y >= ADC_MIN_VALUE + ADC_INCREMENT_MULTIPLIER then
-            adc_value_y_next <= adc_value_y - ADC_INCREMENT_MULTIPLIER;
-          else 
-            adc_value_y_next <= ADC_MIN_VALUE; -- clamp to min Value
-          end if;
-        else 
-          if adc_value_y >= ADC_MIN_VALUE + ADC_INCREMENT then
-            adc_value_y_next <= adc_value_y - ADC_INCREMENT;
-          else 
-            adc_value_y_next <= ADC_MIN_VALUE; -- clamp to min Value
-          end if;
-        end if;  
-      else
-        adc_value_y_next <= adc_value_y;
-      end if;
-    end if;
-    
-    -- Send Valid Strobe when Button is pressed or debug mode is activated
-    if sw_enable_debug_mode = '0' then -- * Needed for when activating debug mode
-      adc_valid_strobe_next <= '1';
-    elsif btn_increase = '1' or btn_decrease = '1' then
+
+    if (btn_increase = '1' or btn_decrease = '1') and adc_valid_strobe = '0' then
       adc_valid_strobe_next <= '1';
     else
       adc_valid_strobe_next <= '0';
     end if;
-  end process btn_actions;
+  end process;
+
+  increase_x <= '1' when btn_increase = '1' and sw_select_axis = '0' else
+                '0';
+  increase_y <= '1' when btn_increase = '1' and sw_select_axis = '1' else
+                '0';
+  decrease_x <= '1' when btn_decrease = '1' and sw_select_axis = '0' else
+                '0';
+  decrease_y <= '1' when btn_decrease = '1' and sw_select_axis = '1' else
+                '0';
+
+  increment_control_x : entity work.increment_control generic map (
+    BIT_WIDTH => ADC_BIT_WIDTH,
+    INCREMENT_VALUE => ADC_INCREMENT_DEBUG,
+    MULTIPLIER_VALUE => ADC_INCREMENT_MULTIPLIER_DEBUG,
+    MIN_VALUE => ADC_VALUE_0_DEG,
+    MAX_VALUE => ADC_VALUE_180_DEG,
+    DEFAULT_VALUE => DEFAULT_ADC_VALUE_DEBUG
+    ) port map (
+    clk_i => clk_i,
+    reset_i => reset_i,
+    multiply_increment_i => sw_select_increment_amount,
+    increase_i => increase_x,
+    decrease_i => decrease_x,
+    value_o => adc_value_x_o
+    );
+
+  increment_control_y : entity work.increment_control generic map (
+    BIT_WIDTH => ADC_BIT_WIDTH,
+    INCREMENT_VALUE => ADC_INCREMENT_DEBUG,
+    MULTIPLIER_VALUE => ADC_INCREMENT_MULTIPLIER_DEBUG,
+    MIN_VALUE => ADC_VALUE_0_DEG,
+    MAX_VALUE => ADC_VALUE_180_DEG,
+    DEFAULT_VALUE => DEFAULT_ADC_VALUE_DEBUG
+    ) port map (
+    clk_i => clk_i,
+    reset_i => reset_i,
+    multiply_increment_i => sw_select_increment_amount,
+    increase_i => increase_y,
+    decrease_i => decrease_y,
+    value_o => adc_value_y_o
+    );
 
   -- Synchronize Input Switches
-  debounce_sw_enable_debug_mode: entity work.debounce(rtl) generic map (
+  debounce_sw_enable_debug_mode : entity work.debounce(rtl) generic map (
     CLK_FREQUENCY_HZ => CLOCK_FREQUENCY_HZ,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
-  ) port map (
+    ) port map (
     clk_i => clk_i,
     reset_i => reset_i,
     button_i => sw_enable_debug_mode_i,
-    debounce_o => sw_enable_debug_mode 
-  );
+    debounce_o => sw_enable_debug_mode
+    );
 
-  debounce_sw_select_axis: entity work.debounce(rtl) generic map (
+  debounce_sw_select_axis : entity work.debounce(rtl) generic map (
     CLK_FREQUENCY_HZ => CLOCK_FREQUENCY_HZ,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
-  ) port map (
+    ) port map (
     clk_i => clk_i,
     reset_i => reset_i,
     button_i => sw_select_axis_i,
     debounce_o => sw_select_axis
-  );
+    );
 
-  debounce_sw_select_increment_amount: entity work.debounce(rtl) generic map (
+  debounce_sw_select_increment_amount : entity work.debounce(rtl) generic map (
     CLK_FREQUENCY_HZ => CLOCK_FREQUENCY_HZ,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
-  ) port map (
+    ) port map (
     clk_i => clk_i,
     reset_i => reset_i,
     button_i => sw_select_increment_amount_i,
     debounce_o => sw_select_increment_amount
-  );
+    );
 
   -- Debounce Input Buttons:
   -- * Note: Button Inputs on the board are inverted, the input signals do NOT get inverted here.
   -- * They are inverted in the top-level-entity.
-  
-  debounce_btn_increase: entity work.debounce_to_strobe(rtl) generic map (
+
+  debounce_btn_increase : entity work.debounce_to_strobe(rtl) generic map (
     CLK_FREQUENCY_HZ => CLOCK_FREQUENCY_HZ,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
-  ) port map (
+    ) port map (
     clk_i => clk_i,
     reset_i => reset_i,
     button_i => btn_increase_i,
     strobe_o => btn_increase
-  );
-  
-  debounce_btn_decrease: entity work.debounce_to_strobe(rtl) generic map (
+    );
+
+  debounce_btn_decrease : entity work.debounce_to_strobe(rtl) generic map (
     CLK_FREQUENCY_HZ => CLOCK_FREQUENCY_HZ,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
-  ) port map (
+    ) port map (
     clk_i => clk_i,
     reset_i => reset_i,
     button_i => btn_decrease_i,
     strobe_o => btn_decrease
-  );
+    );
 
-end architecture rtl; 
+end architecture rtl;

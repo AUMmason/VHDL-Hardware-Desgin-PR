@@ -22,7 +22,7 @@ entity tilt_board_combined_debug is
     signal btn_decrease_i : in std_ulogic;
     --  Input Signals:
     signal x_comp_async_i, y_comp_async_i : in std_ulogic;
-    
+
     -- Outputs:
     --  Comparison Voltage for X and Y
     signal x_pwm_pin_o, y_pwm_pin_o : out std_ulogic;
@@ -37,7 +37,7 @@ entity tilt_board_combined_debug is
 end entity tilt_board_combined_debug;
 
 architecture rtl of tilt_board_combined_debug is
-  constant ADC_BIT_WIDTH : natural := integer( ceil(log2(real( ADC_VALUE_RANGE ))) );
+  constant ADC_BIT_WIDTH : natural := integer(ceil(log2(real(ADC_VALUE_RANGE))));
 
   signal reset, btn_increase, btn_decrease : std_ulogic;
   signal enable_filter : std_ulogic;
@@ -60,19 +60,18 @@ begin
   debounce_enable_filter_sw : entity work.debounce(rtl) generic map (
     CLK_FREQUENCY_HZ => BOARD_CLOCK_FREQ,
     DEBOUNCE_TIME_MS => BTN_DEBOUNCE_TIME_MS
-  ) port map (
+    ) port map (
     clk_i => clk_i,
     reset_i => reset,
     button_i => sw_enable_filter_i,
     debounce_o => enable_filter
-  );
+    );
 
   button_control : entity work.button_control(rtl) generic map (
     ADC_BIT_WIDTH => ADC_BIT_WIDTH,
     DEBOUNCE_TIME_MS => BTN_DEBOUNCE_TIME_MS,
-    CLOCK_FREQUENCY_HZ => BOARD_CLOCK_FREQ,
-    DEFAULT_ADC_VALUE => DEFAULT_ADC_VALUE_DEBUG
-  ) port map (
+    CLOCK_FREQUENCY_HZ => BOARD_CLOCK_FREQ
+    ) port map (
     clk_i => clk_i,
     reset_i => reset,
 
@@ -81,16 +80,16 @@ begin
     sw_select_increment_amount_i => sw_select_increment_amount_i,
     btn_increase_i => btn_increase,
     btn_decrease_i => btn_decrease,
-    
+
     enable_debug_mode_o => enable_debug_mode,
     adc_value_x_o => debug_adc_value_x,
     adc_value_y_o => debug_adc_value_y,
     adc_valid_strobe_o => debug_adc_valid_strobe
-  );
+    );
 
   tilt_board_debug_x : entity work.tilt_board_debug(rtl) generic map (
     ADC_BIT_WIDTH => ADC_BIT_WIDTH
-  ) port map (
+    ) port map (
     clk_i => clk_i,
     reset_i => reset,
 
@@ -102,15 +101,15 @@ begin
     axis_comp_async_i => x_comp_async_i,
     axis_pwm_pin_o => x_pwm_pin_o,
     axis_servo_pwm_pin_o => x_servo_pwm_pin_o,
-    
+
     LED_X00_o => x_LED_X00_o,
     LED_0X0_o => x_LED_0X0_o,
     LED_00X_o => x_LED_00X_o
-  );
+    );
 
   tilt_board_debug_y : entity work.tilt_board_debug(rtl) generic map (
     ADC_BIT_WIDTH => ADC_BIT_WIDTH
-  ) port map (
+    ) port map (
     clk_i => clk_i,
     reset_i => reset,
 
@@ -122,10 +121,10 @@ begin
     axis_comp_async_i => y_comp_async_i,
     axis_pwm_pin_o => y_pwm_pin_o,
     axis_servo_pwm_pin_o => y_servo_pwm_pin_o,
-    
+
     LED_X00_o => y_LED_X00_o,
     LED_0X0_o => y_LED_0X0_o,
     LED_00X_o => y_LED_00X_o
-  );
-    
+    );
+
 end architecture rtl;

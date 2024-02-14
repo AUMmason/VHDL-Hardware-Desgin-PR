@@ -10,7 +10,7 @@ entity increment_control_tb is
 end entity increment_control_tb;
 
 architecture testbench of increment_control_tb is
-  constant BIT_WIDTH : natural := integer( ceil(log2(real( ADC_VALUE_RANGE ))) );
+  constant BIT_WIDTH : natural := integer(ceil(log2(real(ADC_VALUE_RANGE))));
   constant CLK_FREQUENCY : integer := 500; -- 500 Hz
   constant CLK_PERIOD : time := 1000 ms / CLK_FREQUENCY; -- T = 1/f
 
@@ -20,7 +20,7 @@ architecture testbench of increment_control_tb is
 
 begin
 
-  increment_control_inst: entity work.increment_control
+  increment_control_inst : entity work.increment_control
     generic map(
       BIT_WIDTH => BIT_WIDTH,
       INCREMENT_VALUE => 1,
@@ -28,7 +28,7 @@ begin
       MIN_VALUE => ADC_VALUE_0_DEG,
       MAX_VALUE => ADC_VALUE_180_DEG,
       DEFAULT_VALUE => DEFAULT_ADC_VALUE_DEBUG
-    ) port map(
+      ) port map(
       clk_i => clk,
       reset_i => reset,
       increase_i => increase,
@@ -36,15 +36,15 @@ begin
       multiply_increment_i => multiply_increment,
       value_o => value
     );
-  
+
   clk <= not clk after CLK_PERIOD / 2;
-  
+
   Stimuli_1 : process is
   begin
     reset <= '1';
 
     wait for 10 ms;
-    
+
     reset <= '0';
     increase <= '1';
 
