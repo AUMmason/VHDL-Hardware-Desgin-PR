@@ -9,7 +9,7 @@ entity moving_average_filter_tb is
 end entity moving_average_filter_tb;
 
 architecture rtl of moving_average_filter_tb is
-  constant BIT_WIDTH : natural := integer( ceil(log2(real( ADC_VALUE_RANGE ))) );
+  constant BIT_WIDTH : natural := integer(ceil(log2(real(ADC_VALUE_RANGE))));
   constant CLK_FREQUENCY : natural := 50;
   constant CLK_PERIOD : time := 1000 ms / CLK_FREQUENCY;
   constant REGISTER_LENGTH : natural := 8;
@@ -23,21 +23,21 @@ architecture rtl of moving_average_filter_tb is
   signal strobe : std_ulogic := '0';
   signal strobe_valid : std_ulogic := '0';
 begin
-  
+
   clk <= not clk after CLK_PERIOD / 2;
 
-  Strobe_Module: entity work.strobe_generator(rtl) generic map (
+  Strobe_Module : entity work.strobe_generator(rtl) generic map (
     STROBE_PERIOD => STROBE_PERIOD
-  ) port map (
+    ) port map (
     clk_i => clk,
     reset_i => reset,
     strobe_o => strobe
-  );
+    );
 
-  Moving_Average: entity work.moving_average_filter(rtl) generic map (
+  Moving_Average : entity work.moving_average_filter(rtl) generic map (
     BIT_WIDTH => BIT_WIDTH,
     REGISTER_LENGTH => REGISTER_LENGTH
-  ) port map (
+    ) port map (
     enable_i => enable,
     clk_i => clk,
     reset_i => reset,
@@ -45,9 +45,9 @@ begin
     data_o => data_o,
     strobe_data_valid_i => strobe,
     strobe_data_valid_o => strobe_valid
-  );
+    );
 
-  Stimuli: process is
+  Stimuli : process is
   begin
     reset <= '1';
 
@@ -58,7 +58,7 @@ begin
     wait for 50 ms;
 
     data_i <= to_unsigned(250, BIT_WIDTH);
-    
+
     wait for 600 ms;
 
     data_i <= to_unsigned(0, BIT_WIDTH);
@@ -120,6 +120,15 @@ begin
     -- reset <= '0';
 
     data_i <= to_unsigned(250, BIT_WIDTH);
+
+    wait for 700 ms;
+
+    reset <= '1';
+
+    wait for 50 ms;
+
+    reset <= '0';
+    data_i <= to_unsigned(125, BIT_WIDTH);
 
     wait;
 

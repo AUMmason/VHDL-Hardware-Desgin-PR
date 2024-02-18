@@ -3,7 +3,6 @@ quit -sim
 # Files needed for Simulation
 vcom VHDL-Hardware-Desgin-PR/UE_4/strobe_generator_a.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_4/strobe_generator_e.vhd
-vcom VHDL-Hardware-Desgin-PR/UE_7/unsigned_shift_register_ea.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_7/moving_average_filter_tb.vhd
 vcom VHDL-Hardware-Desgin-PR/UE_7/moving_average_filter_ea.vhd
 
@@ -30,13 +29,12 @@ add wave -divider Internal
 
 add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_Average/sum
 add wave -noupdate -color {Cornflower Blue} -radix unsigned /moving_average_filter_tb/Moving_Average/sum_next
-add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_Average/data_last
 add wave -noupdate -color Cyan -radix unsigned /moving_average_filter_tb/Moving_Average/data_o
 add wave -noupdate -color {Cornflower Blue} -radix decimal /moving_average_filter_tb/Moving_Average/REGISTER_LENGTH
 add wave -noupdate -color {Cornflower Blue} -radix decimal /moving_average_filter_tb/Moving_Average/SHIFT_AMOUNT
-add wave -noupdate -radix unsigned /moving_average_filter_tb/Moving_Average/shift_register/data_chain
-add wave -noupdate -color {Cornflower Blue} -radix unsigned /moving_average_filter_tb/Moving_Average/shift_register/data_chain_next
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /moving_average_filter_tb/Moving_Average/shift_register
+add wave -noupdate -color {Cornflower Blue} -radix unsigned /moving_average_filter_tb/Moving_Average/shift_register_next
 
-run 3200 ms
+run 4000 ms
 # Set Zoom Level {from ms} {to ms}
-WaveRestoreZoom {0 ms} {3250 ms}
+WaveRestoreZoom {0 ms} {4050 ms}

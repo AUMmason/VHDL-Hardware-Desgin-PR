@@ -20,8 +20,8 @@ architecture rtl of unsigned_shift_register is
 begin
 
   data_o <= data_chain(data_chain'right);
-  
-  clk: process(clk_i, reset_i)
+
+  clk : process (clk_i, reset_i)
   begin
     if reset_i = '1' then
       data_chain <= (others => (others => '0'));
@@ -29,8 +29,8 @@ begin
       data_chain <= data_chain_next;
     end if;
   end process clk;
-  
-  shift_register: process(data_chain, data_i)
+
+  shift_register : process (data_chain, data_i)
   begin
     data_chain_next <= data_chain;
     -- Shift data input from left to right
