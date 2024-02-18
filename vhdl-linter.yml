@@ -1,0 +1,33 @@
+rules:
+  coding-style: true
+  consistent-casing: true
+  component: true
+  instantiation: true
+  configuration: true
+  multiple-definition: true
+  not-declared: false
+  naming-style: true
+  casing-style: true
+  type-checking: true
+  type-resolved: false
+  unused: false
+  use-clause: false
+  empty: false
+  constant-write: true
+  parser: true
+  unit: true
+  not-allowed: false
+  order: true
+  attribute: true
+style:
+  preferredLogicTypePort: unresolved
+  preferredLogicTypeSignal: unresolved
+  preferredLogicTypeRecordChild: unresolved
+  ieeeCasing: lowercase
+  unusedSuffix: _unused
+  objectCasing: snake_case
+  constantGenericCasing: CONSTANT_CASE
+  outSuffix: _o
+  inSuffix: _i
+  labelCasing: lowercase
+  portOmission: true
