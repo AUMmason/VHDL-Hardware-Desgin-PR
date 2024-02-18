@@ -13,3 +13,7 @@ A Repo for storing Project files from the Hardware Desgin Praktikum at JKU
 - UE 7: Implementation of Moving-Average-Filter
 - UE 8: Implementation of Debug-Mode for Testing
 - UE 9: Finializing Project and code cleanup
+
+## Hardware
+
+![pin-assignments-on-board](https://github.com/AUMmason/VHDL-Hardware-Desgin-PR/assets/35566401/95dae687-c81c-4cd3-991b-246dc9ff5368)
