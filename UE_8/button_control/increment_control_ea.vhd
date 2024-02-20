@@ -43,7 +43,7 @@ begin
 
   increment <= resize(multiplier * to_unsigned(INCREMENT_VALUE, BIT_WIDTH), BIT_WIDTH);
 
-  process (increase_i, decrease_i, value)
+  process (increase_i, decrease_i, value, increment)
   begin
     value_next <= value;
     if increase_i = '1' then

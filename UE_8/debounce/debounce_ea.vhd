@@ -26,37 +26,36 @@ entity debounce is
 end entity debounce;
 
 architecture rtl of debounce is
-  constant COUNTER_MAX : natural := DEBOUNCE_TIME_MS * (CLK_FREQUENCY_HZ / 1000); 
-  constant BIT_WIDTH : natural := integer( ceil(log2(real( COUNTER_MAX ))) );
+  constant COUNTER_MAX : natural := DEBOUNCE_TIME_MS * (CLK_FREQUENCY_HZ / 1000);
+  constant BIT_WIDTH : natural := integer(ceil(log2(real(COUNTER_MAX))));
   constant COUNTER_MAX_VALUE : unsigned(BIT_WIDTH - 1 downto 0) := to_unsigned(COUNTER_MAX, BIT_WIDTH);
-  
+
   type FSM_STATE is (START, PRESSED, UNPRESSED);
   signal state, state_next : FSM_STATE;
   signal counter_value : unsigned(BIT_WIDTH - 1 downto 0) := to_unsigned(0, BIT_WIDTH); -- * has to be initialized
   signal reset_counter : std_ulogic;
 begin
-  
-  clk: process(clk_i, reset_i)
+
+  clk : process (clk_i, reset_i)
   begin
     if reset_i = '1' then
       counter_value <= to_unsigned(0, BIT_WIDTH);
-      state <= START; 
+      state <= START;
     elsif rising_edge(clk_i) then
       state <= state_next;
       if reset_counter = '0' then
-        if counter_value < COUNTER_MAX then  
-          -- prevent overflow, because this would produce additional delay
+        if counter_value < COUNTER_MAX then
           counter_value <= counter_value + to_unsigned(1, BIT_WIDTH);
-        else 
+        else
           counter_value <= counter_value;
         end if;
-      else 
+      else
         counter_value <= to_unsigned(0, BIT_WIDTH);
       end if;
     end if;
   end process clk;
-  
-  state_machine: process(state, button_i, counter_value)
+
+  state_machine : process (state, button_i, counter_value)
   begin
     state_next <= state;
 
@@ -66,7 +65,7 @@ begin
         if button_i = '1' then
           state_next <= PRESSED;
         end if;
-      when PRESSED => 
+      when PRESSED =>
         debounce_o <= '1';
         if counter_value >= COUNTER_MAX_VALUE then
           if button_i = '0' then
@@ -81,14 +80,14 @@ begin
       when others =>
         -- FALLBACK
         state_next <= state;
-    end case;    
+    end case;
   end process state_machine;
 
-  counter: process(state, state_next)
+  counter : process (state, state_next)
   begin
     if state = state_next then
       reset_counter <= '0';
-    else 
+    else
       reset_counter <= '1';
     end if;
   end process counter;

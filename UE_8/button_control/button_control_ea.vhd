@@ -36,8 +36,9 @@ architecture rtl of button_control is
   signal btn_increase, btn_decrease : std_ulogic;
   signal increase_x, increase_y, decrease_x, decrease_y : std_ulogic;
   signal adc_valid_strobe, adc_valid_strobe_next : std_ulogic;
+  signal sw_enable_debug_mode_prev : std_ulogic;
 
-begin -- Architecture
+begin
 
   enable_debug_mode_o <= sw_enable_debug_mode;
   adc_valid_strobe_o <= adc_valid_strobe;
@@ -48,17 +49,23 @@ begin -- Architecture
       adc_valid_strobe <= '0';
     elsif rising_edge(clk_i) then
       adc_valid_strobe <= adc_valid_strobe_next;
+      sw_enable_debug_mode_prev <= sw_enable_debug_mode;
     end if;
   end process clk;
 
-  strobe : process (btn_increase, btn_decrease)
+  strobe : process (btn_increase, btn_decrease, adc_valid_strobe, sw_enable_debug_mode, sw_enable_debug_mode_prev)
   begin
     adc_valid_strobe_next <= adc_valid_strobe;
-
-    if (btn_increase = '1' or btn_decrease = '1') and adc_valid_strobe = '0' then
+    if sw_enable_debug_mode = '1' and sw_enable_debug_mode_prev = '0' then
+      -- Send valid strobe in order to update current ADC values to debug ADC values when enabling debug mode
       adc_valid_strobe_next <= '1';
     else
-      adc_valid_strobe_next <= '0';
+      -- Update on increase / decrease
+      if (btn_increase = '1' or btn_decrease = '1') and adc_valid_strobe = '0' then
+        adc_valid_strobe_next <= '1';
+      else
+        adc_valid_strobe_next <= '0';
+      end if;
     end if;
   end process;
 

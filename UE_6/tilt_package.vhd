@@ -5,7 +5,7 @@ use IEEE.math_real.all;
 
 package tilt_package is
   constant SYNC_CHAIN_LENGTH : natural := 2;
-  constant BTN_DEBOUNCE_TIME_MS : natural := 20; -- 20 ms
+  constant BTN_DEBOUNCE_TIME_MS : natural := 50; -- 50 ms
   constant MOV_AVG_LENGTH : natural := 8;
   -- Debug Mode Constants
   constant DEFAULT_ADC_VALUE_DEBUG : natural := 125; -- Servo at 90°
