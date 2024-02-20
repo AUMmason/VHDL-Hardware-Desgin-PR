@@ -55,8 +55,7 @@ begin
   btn_increase <= not btn_increase_i;
   btn_decrease <= not btn_decrease_i;
 
-  -- Other Inputs get debounced in button_control
-  -- ? @Tutor: Should the reset button also be debounced?
+  -- * Other Inputs get debounced in button_control
   debounce_enable_filter_sw : entity work.debounce(rtl) generic map (
     CLK_FREQUENCY_HZ => BOARD_CLOCK_FREQ,
     DEBOUNCE_TIME_MS => BTN_DEBOUNCE_TIME_MS

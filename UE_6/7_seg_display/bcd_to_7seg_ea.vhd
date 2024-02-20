@@ -3,18 +3,19 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity bcd_to_7seg is
-    port (  bcd_i                : in  std_ulogic_vector(3 downto 0);
-            LED_o                : out  std_ulogic_vector (0 to 6)
-          );
+  port (
+    bcd_i : in std_ulogic_vector(3 downto 0);
+    LED_o : out std_ulogic_vector (0 to 6)
+  );
 end bcd_to_7seg;
 
 architecture rtl of bcd_to_7seg is
 
 begin
 
-process(bcd_i)
-begin
-    case bcd_i is            --abcdefg
+  process (bcd_i)
+  begin
+    case bcd_i is --abcdefg
       when "0000" => LED_o <= "0000001"; -- 0     
       when "0001" => LED_o <= "1001111"; -- 1 
       when "0010" => LED_o <= "0010010"; -- 2 
@@ -33,6 +34,6 @@ begin
       when "1111" => LED_o <= "0111000"; -- F
       when others => LED_o <= "1111111"; -- switch all off - negated logic
     end case;
-end process;
+  end process;
 
 end architecture;

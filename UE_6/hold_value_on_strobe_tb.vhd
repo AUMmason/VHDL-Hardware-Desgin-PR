@@ -17,28 +17,28 @@ architecture Testbench of hold_value_on_strobe_tb is
   signal value_in : unsigned(BIT_WIDTH - 1 downto 0);
   signal value_out : unsigned(BIT_WIDTH - 1 downto 0);
 begin
-  
-  StrobeGenerator: entity work.strobe_generator(rtl) generic map(
+
+  StrobeGenerator : entity work.strobe_generator(rtl) generic map(
     STROBE_PERIOD => 5
-  ) port map (
+    ) port map (
     strobe_o => strobe,
     clk_i => clk,
     reset_i => reset
-  );
+    );
 
-  HoldValueOnStrobe: entity work.hold_value_on_strobe(rtl) generic map (
+  HoldValueOnStrobe : entity work.hold_value_on_strobe(rtl) generic map (
     BIT_WIDTH => BIT_WIDTH
-  ) port map (
+    ) port map (
     strobe_i => strobe,
     clk_i => clk,
     reset_i => reset,
     value_i => value_in,
     hold_value_o => value_out
-  );
+    );
 
   clk <= not clk after CLK_PERIOD / 2;
 
-  Stimuli: process is
+  Stimuli : process is
   begin
     reset <= '1';
     value_in <= "0000";
@@ -49,13 +49,13 @@ begin
 
     wait for 150 ns;
     value_in <= "0011";
-    
+
     wait for 300 ns;
     value_in <= "1100";
-    
+
     wait for 20 ns;
     value_in <= "0000";
-    
+
     wait for 20 ns;
     value_in <= "0001";
 
@@ -92,5 +92,5 @@ begin
     wait;
 
   end process Stimuli;
-  
+
 end architecture Testbench;

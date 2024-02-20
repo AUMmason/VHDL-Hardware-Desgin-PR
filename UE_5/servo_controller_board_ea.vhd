@@ -16,14 +16,14 @@ end entity servo_controller_board_ea;
 architecture synth of servo_controller_board_ea is
   constant BIT_WIDTH : natural := 11;
 begin
-  
-  ServoController: entity work.servo_controller(rtl) generic map(
+
+  ServoController : entity work.servo_controller(rtl) generic map(
     INPUT_BIT_WIDTH => BIT_WIDTH
-  ) port map (
+    ) port map (
     clk_i => clk_i,
     reset_i => reset_i,
     pwm_on_value_i => pwm_on_value_i,
     servo_o => servo_o
-  );
-  
+    );
+
 end architecture synth;

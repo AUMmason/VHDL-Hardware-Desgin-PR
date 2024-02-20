@@ -16,7 +16,7 @@ package servo_package is
   constant CLOCK_FREQUENCY_MS : natural := BOARD_CLOCK_FREQ / 1000; -- 50 MHz
   constant SERVO_PWM_PERIOD_MS : natural := 20; -- ms 
   constant SERVO_COUNTER_MAX : natural := SERVO_PWM_PERIOD_MS * CLOCK_FREQUENCY_MS;
-  constant SERVO_COUNTER_BIT_WIDTH : natural := integer( ceil(log2(real( SERVO_COUNTER_MAX ))) );
+  constant SERVO_COUNTER_BIT_WIDTH : natural := integer(ceil(log2(real(SERVO_COUNTER_MAX))));
   -- INPUT SIGNAL MAPPING:
-  constant SERVO_STEP_SIZE : unsigned(SERVO_COUNTER_BIT_WIDTH - 1 downto 0) := to_unsigned(CLOCK_FREQUENCY_MS / SERVO_SIGNAL_RANGE, SERVO_COUNTER_BIT_WIDTH); 
+  constant SERVO_STEP_SIZE : unsigned(SERVO_COUNTER_BIT_WIDTH - 1 downto 0) := to_unsigned(CLOCK_FREQUENCY_MS / SERVO_SIGNAL_RANGE, SERVO_COUNTER_BIT_WIDTH);
 end package servo_package;

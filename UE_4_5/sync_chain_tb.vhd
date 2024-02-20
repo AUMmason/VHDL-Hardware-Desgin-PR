@@ -12,19 +12,19 @@ architecture Testbench of sync_chain_tb is
   signal clk, reset : std_ulogic := '0';
   signal async_i, sync_o : std_ulogic;
 begin
-  
+
   clk <= not clk after CLK_PERIOD;
 
-  sync_chain: entity work.sync_chain(rtl) generic map(
+  sync_chain : entity work.sync_chain(rtl) generic map(
     CHAIN_LENGTH => 4
-  ) port map(
+    ) port map(
     Async_i => async_i,
     Sync_o => sync_o,
     reset_i => reset,
     clk_i => clk
-  );
+    );
 
-  Stimuli: process is
+  Stimuli : process is
   begin
     report std_ulogic'image(sync_o);
     reset <= '1';
@@ -60,5 +60,5 @@ begin
     wait;
 
   end process Stimuli;
-  
+
 end architecture Testbench;

@@ -14,18 +14,18 @@ architecture stimuli of strobe_generator_tb is
   signal strobe : std_ulogic;
 
 begin
-  
-  Strobe_Module: entity work.strobe_generator(rtl) generic map(
+
+  Strobe_Module : entity work.strobe_generator(rtl) generic map(
     STROBE_PERIOD => STROBE_PERIOD
-  ) port map (
+    ) port map (
     clk_i => clk,
     reset_i => reset,
     strobe_o => strobe
-  );
-  
+    );
+
   clk <= not clk after CLK_PERIOD / 2;
-  
-  Stimuli: process is
+
+  Stimuli : process is
   begin
     report std_ulogic'image(strobe);
 

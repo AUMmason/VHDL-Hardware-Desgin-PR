@@ -4,10 +4,10 @@ use IEEE.numeric_std.all;
 
 architecture rtl of counter_e is
   type CNT_STATE is (RESET, COUNTING);
-  signal counter_value: std_ulogic_vector(BIT_WIDTH - 1 downto 0) := (others => '0');  
+  signal counter_value : std_ulogic_vector(BIT_WIDTH - 1 downto 0) := (others => '0');
 begin
 
-  clk: process(reset_i, clk_i) is
+  clk : process (reset_i, clk_i) is
   begin
 
     if reset_i = '1' then
@@ -19,10 +19,10 @@ begin
         counter_value <= std_ulogic_vector(unsigned(counter_value) + to_unsigned(1, BIT_WIDTH));
       end if;
     end if;
-  
+
   end process;
 
-  counter_output: process(counter_value) is
+  counter_output : process (counter_value) is
   begin
     counter_value_o <= counter_value;
   end process counter_output;

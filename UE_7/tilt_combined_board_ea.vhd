@@ -28,16 +28,16 @@ begin
   reset <= not reset_i;
 
   -- Entprellung des Filter-Switches
-  Synchronizer: entity work.sync_chain(rtl) generic map (
+  Synchronizer : entity work.sync_chain(rtl) generic map (
     CHAIN_LENGTH => 2
-  ) port map (
+    ) port map (
     clk_i => clk_i,
     reset_i => reset,
     Async_i => enable_filter_i,
     Sync_o => enable_filter
-  );
+    );
 
-  TiltX: entity work.tilt_board(rtl) port map (
+  TiltX : entity work.tilt_board(rtl) port map (
     enable_filter_i => enable_filter,
     clk_i => clk_i,
     reset_i => reset,
@@ -47,9 +47,9 @@ begin
     LED_X00_o => x_LED_X00_o,
     LED_0X0_o => x_LED_0X0_o,
     LED_00X_o => x_LED_00X_o
-  );
+    );
 
-  TiltY: entity work.tilt_board(rtl) port map (
+  TiltY : entity work.tilt_board(rtl) port map (
     enable_filter_i => enable_filter,
     clk_i => clk_i,
     reset_i => reset,
@@ -59,6 +59,6 @@ begin
     LED_X00_o => y_LED_X00_o,
     LED_0X0_o => y_LED_0X0_o,
     LED_00X_o => y_LED_00X_o
-  );
-  
+    );
+
 end architecture rtl;

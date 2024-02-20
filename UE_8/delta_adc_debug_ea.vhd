@@ -19,17 +19,17 @@ entity delta_adc_debug is
 end entity delta_adc_debug;
 
 architecture rtl of delta_adc_debug is
-  constant ADC_MAX_VALUE: unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(ADC_VALUE_RANGE, ADC_BIT_WIDTH);
+  constant ADC_MAX_VALUE : unsigned(ADC_BIT_WIDTH - 1 downto 0) := to_unsigned(ADC_VALUE_RANGE, ADC_BIT_WIDTH);
 begin
 
-  PWM_Module: entity work.PWM(rtl) generic map(
+  PWM_Module : entity work.PWM(rtl) generic map(
     COUNTER_LEN => ADC_BIT_WIDTH
-  ) port map (
+    ) port map (
     clk_i => clk_i,
     reset_i => reset_i,
     Period_counter_val_i => ADC_MAX_VALUE,
     ON_counter_val_i => adc_value_i,
     PWM_pin_o => PWM_o
-  );
-  
+    );
+
 end architecture rtl;

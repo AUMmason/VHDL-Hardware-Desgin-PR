@@ -9,7 +9,7 @@ end entity servo_controller_tb;
 architecture testbench of servo_controller_tb is
 
   constant INPUT_MAX : natural := 2000;
-  constant BIT_WIDTH : natural := integer( ceil(log2(real( INPUT_MAX ))) );
+  constant BIT_WIDTH : natural := integer(ceil(log2(real(INPUT_MAX))));
   constant CLK_FREQUENCY : integer := 50_000_000; -- 50 MHz
   constant CLK_PERIOD : time := 1000 ms / CLK_FREQUENCY; -- T = 1/f
 
@@ -19,18 +19,18 @@ architecture testbench of servo_controller_tb is
 
 begin
 
-  ServoController: entity work.servo_controller(rtl) generic map(
+  ServoController : entity work.servo_controller(rtl) generic map(
     INPUT_BIT_WIDTH => BIT_WIDTH
-  ) port map (
+    ) port map (
     clk_i => clk,
     reset_i => reset,
     pwm_on_value_i => pwm_on_value_i,
     servo_o => servo_o
-  );
+    );
 
   clk <= not clk after CLK_PERIOD / 2;
-  
-  Stimuli: process is
+
+  Stimuli : process is
   begin
     report std_ulogic'image(servo_o);
     reset <= '1';
@@ -42,9 +42,9 @@ begin
     wait for 0 ms;
 
     pwm_on_value_i <= to_unsigned(1341, BIT_WIDTH); -- Example for very specicif value
-    
+
     wait for 20 ms;
-    
+
     pwm_on_value_i <= to_unsigned(1500, BIT_WIDTH); -- 90°
 
     wait for 20 ms;

@@ -10,7 +10,7 @@ architecture testbench of debounce_tb is
 
   constant CLK_FREQUENCY : integer := 50e6; -- 50 MHz
   constant CLK_PERIOD : time := 1000 ms / CLK_FREQUENCY; -- T = 1/f
-  
+
   signal reset : std_ulogic := '0';
   signal clk : std_ulogic := '0';
   signal button_input, debounce_output : std_ulogic;
@@ -19,36 +19,36 @@ architecture testbench of debounce_tb is
   constant PWM_PERIOD_MS : positive := 1;
 
   constant PWM_PERIOD_COUNT : natural := CLK_FREQUENCY / 10000; -- pwm Signal with one 100 us period
-  constant PWM_BIT_WIDTH : natural := integer( ceil(log2( real(PWM_PERIOD_COUNT) )) ); 
+  constant PWM_BIT_WIDTH : natural := integer(ceil(log2(real(PWM_PERIOD_COUNT))));
 
   signal pwm_on, pwm_period : unsigned(PWM_BIT_WIDTH - 1 downto 0);
 begin
-  
+
   pwm_period <= to_unsigned(PWM_PERIOD_COUNT, PWM_BIT_WIDTH);
 
-  PWM: entity work.pwm(rtl) generic map (
+  PWM : entity work.pwm(rtl) generic map (
     COUNTER_LEN => PWM_BIT_WIDTH
-  ) port map (
+    ) port map (
     clk_i => clk,
-    reset_i => reset ,
+    reset_i => reset,
     Period_counter_val_i => pwm_period,
     ON_counter_val_i => pwm_on,
-    PWM_pin_o => button_input 
-  );
+    PWM_pin_o => button_input
+    );
 
-  debounce: entity work.debounce(rtl) generic map (
+  debounce : entity work.debounce(rtl) generic map (
     CLK_FREQUENCY_HZ => CLK_FREQUENCY,
     DEBOUNCE_TIME_MS => DEBOUNCE_TIME_MS
-  ) port map (
+    ) port map (
     clk_i => clk,
     reset_i => reset,
     button_i => button_input,
-    debounce_o => debounce_output 
-  );
+    debounce_o => debounce_output
+    );
 
   clk <= not clk after CLK_PERIOD / 2;
-  
-  Stimuli: process is
+
+  Stimuli : process is
   begin
 
     -- Pulse with Chatter in front:
@@ -107,7 +107,7 @@ begin
 
     wait for 22 ms;
 
-  wait;
+    wait;
 
   end process Stimuli;
 end architecture testbench;
