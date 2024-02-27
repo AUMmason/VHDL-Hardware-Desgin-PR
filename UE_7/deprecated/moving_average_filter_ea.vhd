@@ -6,7 +6,7 @@ use IEEE.math_real.all;
 entity moving_average_filter_deprecated is
   generic (
     BIT_WIDTH : natural;
-    REGISTER_LENGTH : positive range 2 to 128
+    REGISTER_LENGTH : natural range 2 to 128
     -- REGISTER_LENGTH has to be power of two in order to make division work
     -- REGISTER_LENGTH is effecively FITLER_ORDER + 1.
   );

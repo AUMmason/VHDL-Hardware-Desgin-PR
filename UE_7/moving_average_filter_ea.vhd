@@ -6,8 +6,8 @@ use IEEE.math_real.all;
 entity moving_average_filter is
   generic (
     BIT_WIDTH : natural;
-    REGISTER_LENGTH : positive range 2 to 128
-    -- REGISTER_LENGTH has to be power of two in order to make division work
+    REGISTER_LENGTH : natural range 2 to 128
+    -- REGISTER_LENGTH has to be power of two in order to make division work in this implemenation
     -- REGISTER_LENGTH is effecively the order of the filter + 1.
   );
   port (

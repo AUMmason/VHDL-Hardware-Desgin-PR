@@ -62,7 +62,7 @@ begin
     reset_i => reset_i
     );
 
-  DeltaADC : entity work.delta_adc(rtl) generic map (
+  DeltaADC_Debug : entity work.delta_adc_debug(rtl) generic map (
     PWM_PERIOD => BOARD_CLOCK_FREQ / DELTA_ADC_PWM_FREQ,
     SAMPLING_PERIOD => BOARD_CLOCK_FREQ / DELTA_ADC_SAMPLING_FREQ,
     ADC_BIT_WIDTH => ADC_BIT_WIDTH
@@ -70,18 +70,11 @@ begin
     clk_i => clk_i,
     reset_i => reset_i,
     comparator_i => axis_comp_sync,
+    debug_adc_value_i => debug_adc_value_i,
     adc_valid_strobe_o => adc_unfiltered_valid_strobe,
     pwm_o => axis_pwm_pin,
+    pwm_debug_o => debug_axis_pwm_pin,
     adc_value_o => adc_value_unfiltered
-    );
-
-  DeltaADC_Debug : entity work.delta_adc_debug(rtl) generic map (
-    ADC_BIT_WIDTH => ADC_BIT_WIDTH
-    ) port map (
-    clk_i => clk_i,
-    reset_i => reset_i,
-    adc_value_i => debug_adc_value_i,
-    PWM_o => debug_axis_pwm_pin
     );
 
   MovingAverageFilter : entity work.moving_average_filter(rtl) generic map (
