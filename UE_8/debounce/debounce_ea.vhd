@@ -33,6 +33,7 @@ architecture rtl of debounce is
   type FSM_STATE is (START, PRESSED, UNPRESSED);
   signal state, state_next : FSM_STATE;
   signal counter_value : unsigned(BIT_WIDTH - 1 downto 0) := to_unsigned(0, BIT_WIDTH); -- * has to be initialized
+  signal counter_value_next : unsigned(BIT_WIDTH - 1 downto 0);
   signal reset_counter : std_ulogic;
 begin
 
@@ -43,15 +44,7 @@ begin
       state <= START;
     elsif rising_edge(clk_i) then
       state <= state_next;
-      if reset_counter = '0' then
-        if counter_value < COUNTER_MAX then
-          counter_value <= counter_value + to_unsigned(1, BIT_WIDTH);
-        else
-          counter_value <= counter_value;
-        end if;
-      else
-        counter_value <= to_unsigned(0, BIT_WIDTH);
-      end if;
+      counter_value <= counter_value_next;
     end if;
   end process clk;
 
@@ -83,12 +76,25 @@ begin
     end case;
   end process state_machine;
 
-  counter : process (state, state_next)
+  counter_reset : process (state, state_next)
   begin
     if state = state_next then
       reset_counter <= '0';
     else
       reset_counter <= '1';
+    end if;
+  end process counter_reset;
+
+  counter : process (reset_counter, counter_value)
+  begin 
+    if reset_counter = '0' then
+      if counter_value < COUNTER_MAX then
+        counter_value_next <= counter_value + to_unsigned(1, BIT_WIDTH);
+      else
+        counter_value_next <= counter_value;
+      end if;
+    else
+      counter_value_next <= to_unsigned(0, BIT_WIDTH);
     end if;
   end process counter;
 
